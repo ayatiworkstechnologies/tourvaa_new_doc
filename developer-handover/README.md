@@ -16,14 +16,14 @@ developer-handover/
 ├── 03-local-setup-guide.md                  # Comprehensive local development setup (Backend, Frontend, DB)
 ├── 04-frontend-knowledge-transfer.md        # Next.js App Router, components, route guards, and state management
 ├── 05-backend-knowledge-transfer.md         # FastAPI routers, service layer, dependency injection, and schemas
-├── 06-database-knowledge-transfer.md        # 138-table schema, Alembic migrations, constraints, and backup runbook
+├── 06-database-knowledge-transfer.md        # 139-table schema, Alembic migrations, constraints, and backup runbook
 ├── 07-module-handover.md                    # Deep-dive breakdown of all 20 business modules and workflows
 ├── 08-authentication-authorization.md       # Dual-domain JWT cookies, 2FA TOTP, RBAC matrix, and permission checks
 ├── 09-api-integration-guide.md              # Frontend-to-backend Axios client, interceptors, and endpoint mapping
 ├── 10-deployment-server-handover.md         # Dockerfiles, Uvicorn concurrency, Nginx proxies, and deployment flows
 ├── 11-troubleshooting-guide.md              # 16 concrete operational incident playbooks and diagnostics
 ├── 12-how-to-extend-project.md              # Step-by-step recipes for adding pages, APIs, models, and migrations
-├── 13-testing-regression-checklist.md       # 110 Pytest & 41 frontend test suites, E2E flows, and QA checklist
+├── 13-testing-regression-checklist.md       # 25 Backend tests & 17 frontend test suites, E2E flows, and QA checklist
 ├── 14-known-issues-pending-work.md          # Master technical debt and gap register (P0 to P3 tracking)
 ├── 15-maintenance-guide.md                  # Database maintenance, log rotation, secret rotation, and upgrades
 ├── 16-production-support-runbook.md         # L1/L2/L3 support procedures, health monitoring, and on-call runbook
