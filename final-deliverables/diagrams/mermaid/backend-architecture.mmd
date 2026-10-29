@@ -1,0 +1,58 @@
+sequenceDiagram
+    autonumber
+    actor Client as Browser / Client
+    participant Proxy as Next.js / Reverse Proxy
+    participant Uvicorn as Uvicorn ASGI Server
+    participant Middleware as Middleware Stack
+    participant Router as API Router (/api/*)
+    participant Auth as Auth & RBAC Dependency
+    participant Service as Business Service Layer
+    participant DB as SQLAlchemy / MySQL DB
+    participant Background as Background Tasks
+
+    Note over Uvicorn, DB: Application Startup (Lifespan Context)
+    Uvicorn->>DB: validate_database_migration_head()
+    Uvicorn->>Uvicorn: validate_production_config() & validate_worker_concurrency()
+    Uvicorn->>DB: run_seed() (Roles, Permissions, Email Templates)
+    Uvicorn->>Background: start_background_jobs() (Asyncio Task Loops)
+
+    Note over Client, DB: Inbound Request Lifecycle
+    Client->>Proxy: HTTP Request (Headers, Cookies, Payload)
+    Proxy->>Uvicorn: Forward Request
+    Uvicorn->>Middleware: Execute setup_cors()
+    Middleware->>Middleware: Execute ApiNoStoreMiddleware (Cache-Control: no-store)
+    Middleware->>Middleware: Execute CsrfMiddleware (Origin / Referer Validation)
+    Middleware->>Router: Route Match (/api/v1/...)
+
+    alt Route requires Authentication
+        Router->>Auth: Depends(get_current_user)
+        Auth->>Auth: Extract 'tourvaa_access' cookie or 'Bearer' token
+        Auth->>Auth: decode_auth_token() (Validate admin or normal domain key)
+        Auth->>DB: Check User token_version & UserSession JTI
+        Auth->>Auth: Verify user.is_active and approval_status
+        Auth-->>Router: Inject User object
+    end
+
+    alt Route requires Specific Permission
+        Router->>Auth: Depends(require_permission("bookings.edit"))
+        Auth->>DB: Query RolePermission for User Role
+        Auth-->>Router: Access Granted or 403 Forbidden
+    end
+
+    Router->>Service: Call Domain Service (e.g. bookings.update_booking_status)
+    Service->>DB: Begin DB Transaction (SessionLocal)
+    Service->>DB: Query / Mutate Models (SQLAlchemy ORM)
+    Service->>DB: Commit DB Transaction
+    
+    opt Asynchronous Event Triggered
+        Service->>Background: Schedule Post-Commit Task (e.g. Email / Push / WS Event)
+    end
+
+    Service-->>Router: Return Pydantic Response Schema
+    Router-->>Middleware: 200 OK / Response JSON
+    Middleware-->>Proxy: Set Response Headers
+    Proxy-->>Client: Deliver HTTP Response
+
+    Note over Background, DB: Post-Response Asynchronous Execution
+    Background->>DB: NotificationDelivery / SMTP Dispatch
+    Background->>Client: WebPush VAPID / WebSocket Broadcast

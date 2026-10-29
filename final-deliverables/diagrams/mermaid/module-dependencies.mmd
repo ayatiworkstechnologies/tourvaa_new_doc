@@ -1,0 +1,76 @@
+graph LR
+    subgraph IDENTITY["Identity & Governance"]
+        AUTH[01. Auth & Users]
+        ROLES[Roles & Permissions]
+        AUDIT[19. Audit Logging]
+        SETTINGS[20. Settings & Currency]
+    end
+
+    subgraph CATALOG["Catalog & Inventory"]
+        GEO[13. Destination Guides & Geo]
+        TOURS[02. Tours & Catalog]
+        VERSIONS[03. Tour Versions & Approval]
+        VIATOR[17. External Day Tours]
+    end
+
+    subgraph COMMERCIALS["Commercial Hub & Partners"]
+        SUPPLIERS[08. Suppliers & Ledger]
+        AGENTS[09. Agents & Resellers]
+        AFFILIATES[10. Affiliate Program]
+        CUSTOMERS[11. Customer Management]
+    end
+
+    subgraph TRANSACTION["Transaction Engine"]
+        BOOKINGS[04. Booking Engine]
+        CHECKOUT[05. Checkout & Payments]
+        INVOICES[06. Invoices & Receipts]
+        REFUNDS[07. Cancellations & Refunds]
+    end
+
+    subgraph ENGAGEMENT["Engagement & Support"]
+        CMS[12. Website CMS & Blog]
+        MESSAGING[14. Realtime Messaging]
+        NOTIF[15. Notification Engine]
+        CHATBOT[16. AI Chatbot & RAG]
+        REPORTS[18. Reports & Analytics]
+    end
+
+    %% Dependencies
+    AUTH --> ROLES
+    AUTH --> AUDIT
+    
+    TOURS --> GEO
+    TOURS --> SUPPLIERS
+    VERSIONS --> TOURS
+    VERSIONS --> AUTH
+    VIATOR --> GEO
+    
+    BOOKINGS --> TOURS
+    BOOKINGS --> CUSTOMERS
+    BOOKINGS --> SUPPLIERS
+    BOOKINGS --> AGENTS
+    BOOKINGS --> AFFILIATES
+    
+    CHECKOUT --> BOOKINGS
+    CHECKOUT --> SETTINGS
+    INVOICES --> BOOKINGS
+    INVOICES --> CHECKOUT
+    REFUNDS --> BOOKINGS
+    REFUNDS --> CHECKOUT
+    
+    SUPPLIERS --> BOOKINGS
+    AGENTS --> BOOKINGS
+    AFFILIATES --> BOOKINGS
+    
+    BOOKINGS --> NOTIF
+    BOOKINGS --> MESSAGING
+    MESSAGING --> AUTH
+    
+    CHATBOT --> TOURS
+    CHATBOT --> CMS
+    CMS --> GEO
+    
+    REPORTS --> BOOKINGS
+    REPORTS --> CHECKOUT
+    REPORTS --> SUPPLIERS
+    REPORTS --> AGENTS

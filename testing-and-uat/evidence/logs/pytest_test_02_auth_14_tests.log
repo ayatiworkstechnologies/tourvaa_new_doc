@@ -1,0 +1,30 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.1.1, pluggy-1.7.0 -- C:\Users\Lap1623\AppData\Local\Programs\Python\Python312\python.exe
+cachedir: .pytest_cache
+rootdir: D:\ayatiworks\2026\tourvaa\tourvaa-admin-backend
+configfile: pytest.ini
+plugins: anyio-4.15.1
+collecting ... collected 14 items
+
+tests/test_02_auth.py::test_login_valid_credentials PASSED               [  7%]
+tests/test_02_auth.py::test_login_returns_token PASSED                   [ 14%]
+tests/test_02_auth.py::test_login_invalid_password PASSED                [ 21%]
+tests/test_02_auth.py::test_login_repeated_bad_passwords_lock_the_account PASSED [ 28%]
+tests/test_02_auth.py::test_login_invalid_email PASSED                   [ 35%]
+tests/test_02_auth.py::test_auth_me_with_token PASSED                    [ 42%]
+tests/test_02_auth.py::test_auth_me_returns_user_info PASSED             [ 50%]
+tests/test_02_auth.py::test_auth_me_without_token_fails PASSED           [ 57%]
+tests/test_02_auth.py::test_protected_endpoint_without_token_blocked PASSED [ 64%]
+tests/test_02_auth.py::test_login_history_endpoint PASSED                [ 71%]
+tests/test_02_auth.py::test_forgot_password_returns_safe_response PASSED [ 78%]
+tests/test_02_auth.py::test_refresh_token_endpoint_exists PASSED         [ 85%]
+tests/test_02_auth.py::test_verify_email_endpoint_exists PASSED          [ 92%]
+tests/test_02_auth.py::test_register_endpoint_exists PASSED              [100%]
+
+============================== warnings summary ===============================
+C:\Users\Lap1623\AppData\Local\Programs\Python\Python312\Lib\site-packages\_pytest\cacheprovider.py:469
+  C:\Users\Lap1623\AppData\Local\Programs\Python\Python312\Lib\site-packages\_pytest\cacheprovider.py:469: PytestCacheWarning: could not create cache path D:\ayatiworks\2026\tourvaa\tourvaa-admin-backend\.pytest_cache\v\cache\nodeids: [WinError 5] Access is denied: 'D:\\ayatiworks\\2026\\tourvaa\\tourvaa-admin-backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 14 passed, 1 warning in 64.52s (0:01:04) ===================

@@ -1,0 +1,82 @@
+flowchart TB
+    subgraph CLIENTS["Client Access Tier"]
+        BROWSER["Web Browser / Mobile Client<br/>(Desktop, Tablet, Mobile)"]
+    end
+
+    subgraph EDGE["Edge & Routing Tier (Next.js 16)"]
+        PROXY["Next.js Proxy (src/proxy.ts)<br/>Cookie Verification & Route Shield"]
+        REWRITE["Next.js Route Proxy (next.config.ts)<br/>Rewrites /api and /storage"]
+        SSR["Server Component Rendering<br/>(React 19 / Next.js)"]
+        SPA["Client-Side Portals (SPA)<br/>Admin / Supplier / Agent / Affiliate / Customer"]
+    end
+
+    subgraph API_TIER["FastAPI Application Tier (Port 8000)"]
+        UVICORN["Uvicorn ASGI Server<br/>(Multi-Worker Concurrency)"]
+        MIDDLEWARE["Middleware Stack<br/>(CORS, ApiNoStore, CSRF, ErrorHandlers)"]
+        ROUTERS["API Routers (51 Modular Routers)<br/>(/api/* and /r/*)"]
+        AUTH_GUARD["Authentication & RBAC<br/>(Dual JWT Domain & RolePermission Checker)"]
+        SERVICES["Domain Services Layer (56 Services)<br/>(Bookings, Payments, Tours, Ledgers, etc.)"]
+        WS_HANDLER["WebSocket Hub (/api/ws/messages)<br/>(Realtime Messaging & Live Notifications)"]
+    end
+
+    subgraph BACKGROUND["Background Workers & Scheduled Sweeps"]
+        STALE_SWEEP["Stale Booking Expiry (15m)<br/>Releases Unpaid Calendar Seats"]
+        HOLD_SWEEP["Payment Hold Release (60m)<br/>Releases Expired Gateway Authorizations"]
+        CAPTURE_SWEEP["Payment Capture Retry (15m)<br/>Retries Accepted Booking Captures"]
+        EMAIL_RETRY["Lifecycle Email Retry (15m)<br/>Exponential Backoff 1m/5m/25m"]
+        REMINDERS["Booking & Balance Reminders (60m)<br/>Automated Traveller & Agent Alerts"]
+        RETENTION["Data Retention Pruning (24h)<br/>Prunes Old Sessions & Chat Logs"]
+    end
+
+    subgraph STORAGE["Persistence & Data Tier"]
+        MYSQL[("MySQL 8.0+ Database<br/>(InnoDB Engine, 138 Tables)")]
+        REDIS[("Redis Cache & Pub/Sub<br/>(Distributed Lock & WS Relay)")]
+        LOCAL_DISK[("Private Disk Storage<br/>(private-docs: Invoices, Itineraries, Docs)")]
+    end
+
+    subgraph EXTERNAL["External Third-Party Services"]
+        STRIPE["Stripe Payment Gateway<br/>(Manual Capture & Webhooks)"]
+        PAYPAL["PayPal REST API<br/>(Authorize & Capture Orders)"]
+        CLOUDINARY["Cloudinary Media CDN<br/>(Public Tour & CMS Images)"]
+        VIATOR["Viator Partner API<br/>(External Day Trips & Experiences)"]
+        SMTP["SMTP Mail Server<br/>(Lifecycle & Transactional Emails)"]
+        WEBPUSH["WebPush Push Services<br/>(FCM / Mozilla VAPID)"]
+        GEOIP["GeoIP Provider (ip-api / ipapi)<br/>(Currency & Locale Auto-Detection)"]
+    end
+
+    %% Client flows
+    BROWSER -->|HTTPS Requests| PROXY
+    BROWSER -->|Direct WebSocket Upgrade (wss://)| UVICORN
+
+    %% Edge flows
+    PROXY --> SSR
+    PROXY --> SPA
+    SSR --> REWRITE
+    SPA --> REWRITE
+    REWRITE -->|HTTP Forwarding| UVICORN
+
+    %% API Tier flows
+    UVICORN --> MIDDLEWARE
+    MIDDLEWARE --> ROUTERS
+    ROUTERS --> AUTH_GUARD
+    AUTH_GUARD --> SERVICES
+    ROUTERS --> WS_HANDLER
+
+    %% Persistence flows
+    SERVICES -->|SQLAlchemy 2.0 Pool| MYSQL
+    SERVICES -->|Distributed Locks & Keys| REDIS
+    SERVICES -->|Direct FS Read/Write| LOCAL_DISK
+    WS_HANDLER -->|Pub/Sub Channel ws:messages| REDIS
+
+    %% Background worker flows
+    BACKGROUND -->|acquire_sweep_lock| REDIS
+    BACKGROUND -->|Scheduled Task Execution| SERVICES
+
+    %% External integration flows
+    SERVICES -->|REST API & Webhooks| STRIPE
+    SERVICES -->|REST API & Webhooks| PAYPAL
+    SERVICES -->|Asset Uploads| CLOUDINARY
+    SERVICES -->|Partner API Requests| VIATOR
+    SERVICES -->|SMTP TLS Connection| SMTP
+    SERVICES -->|VAPID HTTP/2 Push| WEBPUSH
+    SERVICES -->|REST Query| GEOIP

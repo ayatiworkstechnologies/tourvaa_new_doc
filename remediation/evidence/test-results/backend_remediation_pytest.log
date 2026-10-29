@@ -1,0 +1,41 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.1.1, pluggy-1.7.0 -- C:\Users\Lap1623\AppData\Local\Programs\Python\Python312\python.exe
+cachedir: .pytest_cache
+rootdir: D:\ayatiworks\2026\tourvaa\tourvaa-admin-backend
+configfile: pytest.ini
+plugins: anyio-4.15.1
+collecting ... collected 25 items
+
+tests/test_01_core_health.py::test_health_returns_200 PASSED             [  4%]
+tests/test_01_core_health.py::test_health_response_body PASSED           [  8%]
+tests/test_01_core_health.py::test_openapi_loads PASSED                  [ 12%]
+tests/test_01_core_health.py::test_openapi_has_paths PASSED              [ 16%]
+tests/test_01_core_health.py::test_openapi_no_v1_paths PASSED            [ 20%]
+tests/test_01_core_health.py::test_root_redirects_or_responds PASSED     [ 24%]
+tests/test_02_auth.py::test_login_valid_credentials PASSED               [ 28%]
+tests/test_02_auth.py::test_login_returns_token PASSED                   [ 32%]
+tests/test_02_auth.py::test_login_invalid_password PASSED                [ 36%]
+tests/test_02_auth.py::test_login_repeated_bad_passwords_lock_the_account PASSED [ 40%]
+tests/test_02_auth.py::test_login_invalid_email PASSED                   [ 44%]
+tests/test_02_auth.py::test_auth_me_with_token PASSED                    [ 48%]
+tests/test_02_auth.py::test_auth_me_returns_user_info PASSED             [ 52%]
+tests/test_02_auth.py::test_auth_me_without_token_fails PASSED           [ 56%]
+tests/test_02_auth.py::test_protected_endpoint_without_token_blocked PASSED [ 60%]
+tests/test_02_auth.py::test_login_history_endpoint PASSED                [ 64%]
+tests/test_02_auth.py::test_forgot_password_returns_safe_response PASSED [ 68%]
+tests/test_02_auth.py::test_refresh_token_endpoint_exists PASSED         [ 72%]
+tests/test_02_auth.py::test_verify_email_endpoint_exists PASSED          [ 76%]
+tests/test_02_auth.py::test_register_endpoint_exists PASSED              [ 80%]
+tests/test_step7_remediation.py::test_get_db_rollback_on_exception PASSED [ 84%]
+tests/test_step7_remediation.py::test_get_db_clean_exit PASSED           [ 88%]
+tests/test_step7_remediation.py::test_csrf_blocks_cookie_auth_without_csrf_header[asyncio] PASSED [ 92%]
+tests/test_step7_remediation.py::test_csrf_allows_matching_double_submit_cookies[asyncio] PASSED [ 96%]
+tests/test_step7_remediation.py::test_csrf_allows_bearer_token_requests[asyncio] PASSED [100%]
+
+============================== warnings summary ===============================
+C:\Users\Lap1623\AppData\Local\Programs\Python\Python312\Lib\site-packages\_pytest\cacheprovider.py:469
+  C:\Users\Lap1623\AppData\Local\Programs\Python\Python312\Lib\site-packages\_pytest\cacheprovider.py:469: PytestCacheWarning: could not create cache path D:\ayatiworks\2026\tourvaa\tourvaa-admin-backend\.pytest_cache\v\cache\nodeids: [WinError 5] Access is denied: 'D:\\ayatiworks\\2026\\tourvaa\\tourvaa-admin-backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 25 passed, 1 warning in 66.59s (0:01:06) ===================

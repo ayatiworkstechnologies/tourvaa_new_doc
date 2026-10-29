@@ -1,0 +1,7 @@
+
+Running 2 tests using 1 worker
+
+  ok 1 [Desktop Edge] › e2e\audit-regressions.spec.ts:3:5 › keyboard skip link moves focus past public navigation (3.9s)
+  ok 2 [Desktop Edge] › e2e\audit-regressions.spec.ts:12:5 › reduced motion disables smooth scrolling (1.6s)
+
+  2 passed (7.7s)

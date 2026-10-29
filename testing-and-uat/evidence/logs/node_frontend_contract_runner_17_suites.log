@@ -1,0 +1,900 @@
+
+============================================================
+Running: module-routes.test.mjs
+============================================================
+
+=== Frontend Module Routes ===
+
+-- Auth
+  ok login/page.tsx exists
+  ok login/page.tsx has content
+  ok register/page.tsx exists
+  ok forgot-password/page.tsx exists
+  ok reset-password/page.tsx exists
+-- Dashboard
+  ok admin/dashboard/page.tsx exists
+  ok admin/dashboard/page.tsx has content
+-- RBAC
+  ok admin/roles/page.tsx exists
+  ok admin/permissions/page.tsx exists
+  ok admin/users/page.tsx exists
+-- Customers / Suppliers / Agents / Affiliates
+  ok admin/customers/page.tsx exists
+  ok admin/customers/[id]/page.tsx exists
+  ok admin/suppliers/page.tsx exists
+  ok admin/suppliers/[id]/page.tsx exists
+  ok admin/agents/page.tsx exists
+  ok admin/agents/[id]/page.tsx exists
+  ok admin/affiliates/page.tsx exists
+  ok admin/affiliates/[id]/page.tsx exists
+-- Tours
+  ok admin/tours/page.tsx exists
+  ok admin/tours/create/page.tsx exists
+  ok admin/tours/[id]/edit/page.tsx exists
+  ok admin/tours/categories/page.tsx exists
+  ok admin/tours/subcategories/page.tsx exists
+-- Settings
+  ok admin/settings/page.tsx exists
+  ok admin/settings/countries/page.tsx exists
+  ok admin/settings/cities/page.tsx exists
+  ok admin/settings/payment/page.tsx exists
+  ok admin/settings/api/page.tsx exists
+-- Reports / Profile
+  ok admin/reports/page.tsx exists
+  ok admin/profile/page.tsx exists
+
+Routes: 30 passed, 0 failed
+
+============================================================
+Running: module-services.test.mjs
+============================================================
+
+=== Frontend Service Files ===
+
+── Core lib
+  ✓ lib/api/client.ts exists
+  ✓ api uses /api base path
+  ✓ api has request interceptor
+  ✓ api has response interceptor
+  ✓ api handles 401 with refresh
+  ✓ lib/api/session.ts exists
+  ✓ session has clearSession
+  ✓ session does not write tokens to localStorage (cookie auth)
+── cmsService
+  ✓ cmsService.ts exists
+  ✓ listCms exported
+  ✓ getCms exported
+  ✓ createCms exported
+  ✓ updateCms exported
+  ✓ updateCmsStatus exported
+── customerService
+  ✓ customerService.ts exists
+── operationsService
+  ✓ operationsService.ts exists
+── bookingService
+  ✓ bookingService.ts exists
+── paymentService
+  ✓ paymentService.ts exists
+── tourDetailService
+  ✓ tourDetailService.ts exists
+  ✓ getOverview exported
+  ✓ saveOverview exported
+  ✓ getItineraries exported
+  ✓ createItinerary exported
+  ✓ reorderItineraries exported
+  ✓ getInclusions exported
+  ✓ getExclusions exported
+  ✓ getHighlights exported
+  ✓ getSimilarTours exported
+  ✓ getExtensions exported
+  ✓ getGallery exported
+  ✓ getPricing exported
+  ✓ getOptionalActivities exported
+  ✓ getAccommodationExtras exported
+  ✓ getCalendar exported
+  ✓ getUnavailableDates exported
+  ✓ getDiscounts exported
+── API path hygiene
+  ✓ No /api/v1 path in any service file
+
+Services: 37 passed, 0 failed
+
+============================================================
+Running: module-permissions.test.mjs
+============================================================
+
+=== Frontend Permissions ===
+
+  ✓ No unauthorized new hyphen-style permission strings
+
+── ProtectedRoute component
+  ✓ ProtectedRoute.tsx exists
+  ✓ ProtectedRoute guards with permission prop
+
+── ModuleWrapper component
+  ✓ ModuleWrapper.tsx exists
+  ✓ ModuleWrapper delegates to ProtectedRoute
+  ✓ AccessDenied.tsx exists
+
+Permissions: 6 passed, 0 failed
+
+============================================================
+Running: module-components.test.mjs
+============================================================
+
+=== Frontend Components ===
+
+── Auth
+  ✓ AuthInput.tsx exists
+  ✓ AuthInput is a React component
+  ✓ AuthInput exported
+  ✓ AuthLayout.tsx exists
+  ✓ ProtectedRoute.tsx exists
+  ✓ ProtectedRoute exported
+── Common
+  ✓ ModuleWrapper.tsx exists
+  ✓ ModuleWrapper exported
+  ✓ DynamicModulePage.tsx exists
+  ✓ EmptyState.tsx exists
+  ✓ LoadingState.tsx exists
+  ✓ ErrorState.tsx exists
+  ✓ AccessDenied.tsx exists
+── CMS
+  ✓ CmsCrudPage.tsx exists
+  ✓ CmsCrudPage exported
+  ✓ TourFormPage.tsx exists
+  ✓ TourFormPage exported
+── Customers
+  ✓ CustomerTable.tsx exists
+  ✓ CustomerProfileCard.tsx exists
+  ✓ CustomerHistoryTables.tsx exists
+  ✓ CustomerHistoryTables exports CustomerBookingHistory
+  ✓ CustomerHistoryTables exports CustomerPaymentHistory
+  ✓ CustomerHistoryTables exports CustomerCommunicationHistory
+  ✓ CustomerActionButtons.tsx exists
+── Code quality
+  ✓ Minimal TODOs in core components (<= 5)
+
+Components: 25 passed, 0 failed
+
+============================================================
+Running: dashboard.test.mjs
+============================================================
+
+=== Dashboard Data Flow ===
+
+  ✓ AuthProvider fetches /dashboard/me
+  ✓ dashboard page fetches /dashboard/summary
+  ✓ dashboard page fetches /dashboard/charts
+  ✓ dashboard page fetches /dashboard/recent-activities
+  ✓ dashboard applies booking ID and status filters to every booking analytics request
+  ✓ dashboard offers one-click current day, week, and month ranges
+  ✓ dashboard data flow has no /api/v1
+
+=== Dashboard Page ===
+
+  ✓ app/admin/dashboard/page.tsx exists
+  ✓ dashboard page uses /dashboard/me or useDashboard
+  ✓ dashboard page has no /api/v1
+
+=== Auth Provider Types ===
+
+  ✓ AuthProvider.tsx exists
+  ✓ AuthProvider includes dashboard_type
+  ✓ AuthProvider includes allowed_modules
+  ✓ AuthProvider includes sidebar_menu
+
+=== Auth Types ===
+
+  ✓ types/auth.ts exists
+  ✓ AuthUser has user_type
+  ✓ AuthUser has approval_status
+
+=== Dashboard Hook ===
+
+  ✓ hooks/useDashboard.ts exists
+  ✓ useDashboard hook exported
+
+=== Protected Route ===
+
+  ✓ ProtectedRoute.tsx exists
+  ✓ ProtectedRoute checks permission
+
+=== API Path Hygiene ===
+
+  ✓ No /api/v1 in any dashboard file
+  ✓ lib/api/client.ts uses /api base path
+  ✓ lib/api/client.ts has no /api/v1
+
+Dashboard: 24 passed, 0 failed
+
+============================================================
+Running: auth-flow.test.mjs
+============================================================
+
+=== Authentication and Session Flow ===
+
+  ok API requests include secure cookie credentials
+  ok browser requests never attach JavaScript bearer tokens
+  ok concurrent 401 responses share one refresh operation
+  ok retried requests rely on the refreshed httpOnly cookie
+  ok expired sessions return to the matching portal login
+  ok failed refresh clears stored authentication
+  ok forbidden mutation toasts preserve the backend reason
+  ok forbidden errors prefer a structured backend message
+  ok access tokens are never read from localStorage
+  ok access tokens are never written to localStorage
+  ok verification and account-status pages remain public while every portal route restores its session
+  ok portal re-login preserves the exact refreshed page
+  ok completed verification activates and redirects every role to sign in
+  ok unified registration never asks for an initial password
+  ok every public role sends the same verification link
+  ok session restoration loads dashboard identity
+  ok invalid restored sessions clear local state
+  ok authenticated login pages redirect by role
+  FAIL new non-admin roles use a role-scoped workspace
+  ok traveller and every partner portal use an explicit Country dropdown
+  ok registration country dropdown provides flags and country search
+  ok registration keeps country and mobile number as separate clear fields
+  ok registration submits the calling code derived from the currently selected country
+  ok explicit logout returns to the matching portal login
+  ok admin guard rejects non-admin dashboard types
+  ok admin guard sends signed-out users to the dedicated admin login
+  ok supplier operational routes are centralized
+  ok pending supplier direct URLs return to the safe dashboard
+  ok pending supplier navigation exposes an approval-required dialog
+  ok pending supplier dashboard shows completion, documents, support and locked modules
+
+Authentication flow: 29 passed, 1 failed
+
+============================================================
+Running: api-contract.test.mjs
+============================================================
+
+=== Frontend / Backend API Contract ===
+
+  ok all 443 statically declared frontend API calls match FastAPI routes
+
+Contract: passed
+
+============================================================
+Running: currency-flow.test.mjs
+============================================================
+
+=== Currency Flow ===
+
+  ok country-search tour cards display active discount badges on images
+  ok USD is the conversion base
+  ok visitor country is used for automatic currency
+  ok country source preserves IP detection and manual overrides
+  ok currency preference persists
+  ok shared money formatting uses selected-currency symbols
+  ok shared money formatting distinguishes dollar currencies
+  ok selection made while rates load is not discarded
+  ok currency changes synchronize across browser tabs
+  ok conversion uses source and target rates
+  ok public header exposes the selector
+  ok public header connects country selection to the saved currency context
+  ok public-header mobile location menu is viewport anchored and stays within screen gutters
+  ok public country selector updates the local currency without changing the current page
+  ok public location selector presents one searchable country and currency list
+  ok public location selector omits detection copy and tab controls
+  ok public header currency list only exposes currencies for enabled countries plus USD
+  ok portal header exposes the selector
+  ok public partner portal header uses the shared dynamic currency selector
+  ok affiliate dashboard converts commissions from their source currency
+  ok affiliate conversion totals and rows follow the selected display currency
+  ok affiliate commission summary follows the selected display currency
+  ok admin customer payment summaries follow the selected display currency
+  ok admin agent detail converts source-currency amounts and protects mixed-currency aggregates
+  ok admin booking list, customer refunds, and discount usage use the selected display currency
+  ok tour listing converts from each tour currency
+  ok tour listing budget labels follow the active display currency while API ranges keep their source currency
+  ok tour details convert price and add-ons
+  ok booking review converts display amounts
+  ok customer and agent checkout both send the selected currency for server-side rate locking
+  ok checkout explains that the selected gateway currency and rate are locked
+  ok confirmed booking amount is shown in its own settled currency, not the display currency
+  ok checkout explains the price breakdown is a display conversion
+
+Currency flow: 33 passed, 0 failed
+
+============================================================
+Running: country-destination-flow.test.mjs
+============================================================
+
+=== Country Destination CMS Flow ===
+
+  ok destination page reads its CMS guide during server rendering
+  ok server guide fetch bypasses relative browser API routing
+  ok missing destination guides return not found instead of demo content
+  ok guide-less countries with published tours fall back to their live catalogue
+  ok destination directory is sourced from published guide records
+  ok tour count never falls back to a fake count
+  ok destination hero always has a return link and image fallback
+  ok destination reasons retain readable body contrast
+  ok destination category controls scroll inside the viewport and leave room for the chat launcher
+  ok destination listing supporting copy keeps a readable colour on its light surface
+  ok light-surface destination copy is not mistaken for dark-section copy by a selection utility
+  ok duration filters use one non-overlapping range system
+  ok tour detail country breadcrumb returns to the country tour listing while the guide CTA stays available
+  ok top deals carousel has visible mobile and desktop controls with position indicators
+  ok admin can save each selected country guide to its scoped CMS block
+  ok country page editors load the complete country catalogue regardless of public status
+  ok preview and editing selectors share one searchable all-country list
+  ok one country selector provides separate tours-page and destination-guide actions
+  ok destination extras status reads the persisted underscore block keys independently
+  ok destination page content is CMS-backed alongside the editable style and season cards
+  ok country card guide link is not nested inside its tour link
+  ok country search is accessible and supports a compact preview control
+  ok country picker labels do not expose administrative active or inactive wording
+  ok generated and curated guide templates use the selected country's real identity
+  ok rapid country changes cannot apply a stale guide response
+  ok searchable country list can escape the guide card without clipping
+
+Country destination CMS flow: 26 passed, 0 failed
+
+============================================================
+Running: calendar-flow.test.mjs
+============================================================
+
+=== Calendar UI Flow ===
+
+  FAIL no native browser date inputs remain
+  ok calendar renders in a portal above clipped containers
+  ok calendar supports minimum and maximum dates
+  ok calendar exposes disabled and availability states
+  ok calendar closes with Escape and outside click
+  ok tour availability editor uses shared calendars
+  ok discount date ranges constrain start and end
+  ok booking restricts selection to live departures
+
+Calendar flow: 7 passed, 1 failed
+
+============================================================
+Running: metadata-flow.test.mjs
+============================================================
+
+=== Page Metadata Coverage ===
+
+  FAIL all 163 pages have a metadata layout
+  ok every page route has a title and description definition
+  ok public metadata includes canonical URLs
+  ok public metadata includes Open Graph tags
+  ok public metadata includes Twitter cards
+  ok private pages are noindex and nofollow
+  ok robots excludes authenticated portals
+  ok sitemap includes public discovery pages
+  Missing layouts: [ 'src\\app\\admin\\invoice-templates\\page.tsx' ]
+
+Metadata flow: 7 passed, 1 failed
+
+============================================================
+Running: customer-flow.test.mjs
+============================================================
+
+=== Customer Booking Flow ===
+
+  ok homepage destination filter uses the active country API list
+  ok homepage destination filter lists every country, ones with tours first
+  ok search preserves travel date
+  ok search preserves adult count
+  ok search preserves child count
+  ok tour links preserve booking query
+  ok login return path preserves booking context
+  ok tour CTA opens dedicated public booking flow
+  ok open public tours refresh approved availability without a manual reload
+  ok customer profile uses a balanced Country and Gender row instead of an editable nationality field
+  ok customer profile keeps country and airline as visibly unselected placeholders until chosen
+  ok supplier, agent, affiliate, and customer registration policy links open safely in a new tab
+  ok cookie policy links open safely in a new tab and visitors can choose each optional category
+  ok public tour details do not add stock gallery media or repeat guide and pace in Travel Essentials
+  ok tour overview starts compact and can reveal its full content
+  ok opening an itinerary day scrolls its header below fixed navigation
+  ok itinerary behaves as a single-open accordion
+  ok public itinerary has one overview presentation without a detailed-view switch
+  ok public itinerary renders every supplier-entered day detail inside the existing accordion
+  ok public tour itinerary previews supplier-authored itinerary days without a download action
+  ok itinerary image clicks open only that day's carousel images
+  ok tour detail booking CTA has no cart actions
+  ok tour detail keeps a sticky booking summary with live name price and actions
+  ok sticky booking summary presents the selected date, traveller count, and total with an elevated action card
+  ok tour detail limits each booking by remaining departure seats
+  ok tour detail never presents sold-out or unavailable departures as bookable
+  ok tour style keeps vehicle capacity separate from live seats remaining
+  ok tour detail never requests a quote below the configured minimum party size
+  ok tour detail keeps price tiers available above the vehicle group size
+  ok tour pricing editor keeps public Group Rate Highlights out of admin and supplier forms
+  FAIL portal login commits cookies before a clean dashboard navigation
+  ok markup screen includes supplier commission in the staged profit calculation
+  ok customer booking itinerary download is a primary full-width action
+  ok checkout payment brands use local SVG assets rather than hand-drawn logos
+  ok Stripe checkout surfaces the local card-network badges for customer and agent payments
+  ok customer booking detail shows real payment and transaction references
+  ok unpaid customer bookings show payment required and can be removed
+  ok cancelled gateway checkout releases its pending amount for a retry
+  ok customer payment dialog exposes only real payment gateways
+  ok customer balance payment sends its derived payment type to both gateways
+  ok tour detail uses one combined special-offer badge and an authoritative quote summary
+  ok date and month navigation does not change the selected departure
+  ok checkout limits travellers by the selected departure seats
+  ok checkout excludes departures inside the tour minimum booking window
+  ok public booking has four visible stages
+  ok public booking is backed by a real checkout session
+  ok public booking confirms through the checkout-session endpoint
+  ok public booking requires a logged-in customer
+  ok public booking uses live server-calculated pricing
+  ok customer deposit rounds cents upward consistently with gateway validation
+  ok selected deposit never falls back to the full outstanding balance
+  ok checkout sends the selected payment type and uses the server-authoritative first charge
+  ok booking continues to the payment step
+  ok checkout terms open separately without losing entered passenger details
+  ok success copy uses the customer booking-request label
+  ok traveller fields follow selected adult and child counts
+  ok every traveller submits a numeric age
+  ok adult and child ages are validated
+  ok optional activities selection feeds price and checkout data
+  ok day tours never offer accommodation, including legacy one-day tours without nights
+  ok new booking opens payment UI
+  ok customer request states use customer-safe booking language
+  ok customer status lifecycle is explicit
+  ok cancellation requires free-period eligibility and explicit confirmation
+  ok gateway charges the selected payment amount
+  ok gateway modal offers deposit and full balance
+  ok partial payment uses the backend-configured deposit percentage
+  ok dashboard payment actions open checkout directly
+  ok dashboard exposes the main traveller quick actions
+  ok dashboard links pending balances to checkout
+  ok dashboard referral action uses native share with clipboard fallback
+  ok dashboard loads its profile from the customer-owned portal endpoint and cancels stale reloads
+  ok payment return shows success only after verified gateway completion
+  ok dashboard request links apply the bookings tab filter
+  ok customer dashboard has no fallback booking or wishlist tour data
+  ok public and customer headers no longer expose cart
+  ok customer portal gets public settings context without the marketing footer
+  ok customer wishlist renders only saved dynamic tours and books them directly
+  ok public header links to the public wishlist page
+  FAIL public header gives admin roles only a direct admin entry
+  ok customer portal header links to the portal wishlist page
+  ok wishlist is loaded from the authenticated user API when logged in
+  ok wishlist mutations persist to the user API when logged in
+  ok wishlist falls back to local storage for guests
+  ok compare list still uses local storage (by design, unlike wishlist for logged-in users)
+  FAIL compare page remains empty until a visitor explicitly adds tours
+  ok public wishlist page renders the store directly instead of redirecting
+  ok retired cart route permanently redirects to tours
+  ok supplier contact context uses supplier operations content and valid workspace actions
+  ok country and catalogue cards show active discount badges
+  ok supplier-funded offers show the pre-discount storefront price on every public card
+  ok login honors safe shared booking redirects
+  ok registration preserves login redirect
+
+Customer flow: 90 passed, 3 failed
+
+============================================================
+Running: supplier-flow.test.mjs
+============================================================
+
+=== Supplier Portal Flow ===
+
+  ok public registration is traveller-only and points partners at their own portals
+  ok supplier earnings estimator calculates from the displayed currency amount
+  ok empty supplier earnings use the active header currency instead of a hard-coded USD fallback
+  ok supplier portal keeps its own inline registration tab (no registerHref override)
+  ok booking filter uses backend booking-status, supplier-decision, and cancellation contracts
+  ok supplier booking filters and columns use supplier terminology
+  ok supplier list remains scoped through authenticated bookings API
+  ok supplier decision status is filterable
+  ok booking summary cards use server-wide status counts
+  ok dashboard booking links apply their status filter
+  ok dashboard exposes recoverable partial-load errors
+  ok dashboard excludes reserved ledger rows from available payout
+  ok dashboard loads supplier-scoped tour totals instead of missing summary fields
+  ok dashboard shows the monthly payout schedule without a request action
+  ok dashboard highlights bookings awaiting supplier decisions
+  ok dashboard retains date-range and status filtering
+  ok dashboard provides loading and filtered empty states
+  ok supplier assignment creates both an in-app notification and durable email delivery
+  ok supplier dashboard action count cannot be zero when a visible booking needs a decision
+  ok supplier can accept pending supplier requests without agent settlement details
+  ok supplier booking detail masks agent reservation payment state before rendering actions
+  ok decline includes a required reason
+  ok supplier cancellation confirms the applicable liability
+  ok supplier withdrawal stays internal to Tourvaa
+  ok submitted supplier withdrawal returns to the supplier booking queue
+  ok supplier acceptance status is displayed
+  ok supplier booking messages use the unified Admin conversation thread
+  ok supplier booking message errors show the API detail
+  ok accept endpoint is connected
+  ok decline endpoint is connected
+  ok supplier can move confirmed tours to ongoing
+  ok only ongoing tours show the completion action
+  ok supplier cannot postpone or resume a tour
+  ok tour submission and withdrawal show the API error detail
+  ok supplier registration accepts every phone-country even when it is absent from the admin geo catalogue
+  ok supplier verification checklist marks required documents red and optional documents green
+  ok supplier desk opens supplier-specific onboarding questions instead of booking questions
+  ok supplier document uploads clearly identify mandatory and optional requirements
+  ok supplier portal mounts the shared language translator
+  ok supplier sees only supplier settlement details
+  ok tour cards use private supplier preview
+  ok tour list supports search and every publishing state
+  ok tour list surfaces submission errors
+  ok tour cards display their cover media
+  ok supplier create/edit pages use the shared TourWizard
+  ok tour creation has guided progress and review
+  ok tour edit retains all structured editing tabs
+  ok tour edit links to private preview
+  ok admin and supplier tour builders use the same shared design system
+  ok supplier tour sections support explicit step completion
+  ok supplier edit uses the complete shared tour details form
+  ok supplier assignment and publishing status stay protected
+  ok supplier tour form uses permitted category lookups
+  ok supplier tour form hides optional taxonomy controls without requiring a category
+  ok supplier edit reuses its loaded tour record in the shared form
+  ok preview uses backend tour field names
+  ok preview loads structured tour sections
+  ok supplier inclusion and exclusion editor does not expose an icon URL field
+  ok supplier message history is connected
+  ok supplier support compose is connected
+  ok supplier messages route booking communication directly to the customer or agent
+  ok payout payload omits unsupported bank fields
+  ok supplier payout history is read-only and shows the month-end schedule
+  ok published Adventure Tours appear in an automatic homepage carousel
+  ok supplier documents expose retryable loading failures
+  ok supplier business years are persisted in business information
+  ok supplier profile collects locked bank, accounts, and billing details
+  ok supplier can view and change the operating currency in company details
+  ok supplier profile advances through each module only after its successful save
+  ok new vehicle form accepts documents and exterior or interior photos before creation
+  ok supplier onboarding excludes the obsolete business-info approval status
+  ok supplier onboarding confirms completed required-document verification without implying features remain locked
+  ok tour editor no longer exposes or submits checkout tax and service fees
+  ok supplier tour editor excludes the SEO step and preserves SEO metadata on other saves
+  ok admin supplier detail exposes registration contact and business address
+  ok supplier pricing distinguishes the offer price from the post-commission payout
+  ok supplier pricing displays and edits legacy slabs in the operating currency
+  ok pricing table identifies adult and child amounts as per-person values
+  ok supplier operating currency is authoritative for tours and pricing slabs
+  ok supplier tour media accepts a clearly labelled itinerary and trip-notes PDF
+  ok public tour media is explicitly routed to the public-only Cloudinary tour folder
+  ok itinerary days provide carousel-image uploads that persist cleanly
+  ok supplier can open and copy the Cloudinary itinerary PDF link from the media editor
+  ok supplier-entered language and tour pace remain visible once in Tour Style
+  ok tour pace and physical rating are edited only in tour style and guide style
+  ok basic tour details displays legacy prices in the supplier operating currency
+  ok TourVaa storefront discounts reduce the admin profit preview
+  ok discount editor blocks overlapping date windows inside the modal for the same owner
+  ok supplier profile shows its agreed commission or the current platform rate without an editable basic tier
+  ok supplier profile shows the marketplace pricing agreement
+  ok supplier inner pages share the upgraded page shell
+  ok supplier inner pages share consistent page headers
+
+Supplier flow: 92 passed, 0 failed
+
+============================================================
+Running: agent-flow.test.mjs
+============================================================
+
+=== Agent Portal Flow ===
+
+  ok public registration is traveller-only and points partners at their own portals
+  ok agent portal keeps its own inline registration tab (no registerHref override)
+  ok agent commission calculator follows the selected page currency
+  ok catalogue uses published tour API
+  ok catalogue does not fall back to private inventory
+  ok catalogue uses backend price and image fields
+  ok catalogue exposes retryable API failures
+  ok catalogue search submits the current form value and always refreshes
+  ok agents can persist favorite tours to their wishlist
+  ok retired agent booking wizard redirects to the booking list
+  ok agent booking list is the only booking workspace
+  ok agent tour cards open the shared public tour booking flow
+  ok agent tour cards display active discounts on their images
+  ok agents can book from the shared public booking page
+  ok shared booking page keeps agent-only customer and commercial controls gated
+  ok public agent booking uses the selected customer as primary traveller
+  ok public agent booking never prefills the agent as the traveller
+  ok agent booking submits commercial controls only through the agent payload branch
+  ok agent checkout excludes promo controls and promo payloads
+  ok existing customer email can be linked to the agent
+  ok agent customer create supplies full_name
+  ok agent customer phone is normalized
+  ok agent customer country selection defaults the phone code to the selected address country
+  ok agent customer create captures address and location
+  ok new customer remains in customer management
+  ok customer list exposes retryable API failures
+  ok shared booking customer create uses the POST customer route
+  ok booking filter uses booking_status
+  ok new pending supplier statuses are represented
+  ok booking list keeps authorization, payment-plan, voided balances, and converted display amounts distinct
+  ok booking summary cards use server-wide status counts
+  ok booking list failures can be retried
+  ok open booking list refreshes when a supplier decision notification arrives
+  ok dashboard sends all visible filters to the summary API
+  ok dashboard exposes recoverable partial-load errors
+  ok commission requests are managed from the agent dashboard
+  ok agent booking detail does not expose the shared-customer visibility notice
+  ok detail uses serialized traveller counts
+  ok agent booking header prioritizes the tour name and keeps the booking id compact
+  ok detail uses the same customer-facing booking lifecycle labels
+  ok detail gives professional confirmation-pending wording without exposing internal execution flow
+  ok detail shows the settlement summary without a duplicate price breakdown
+  ok agent booking detail shows real payment and transaction references
+  ok agent cancellation requires eligibility and confirmation
+  ok agent cancellation warning is clear and does not duplicate support wording
+  ok agent can reopen payment for an unpaid booking
+  ok agent payment modal never offers a customer deposit option
+  ok agent payment has a usable non-production fallback when live gateways are absent
+  ok payment method loading failures are visible and retryable
+  ok unpaid gateway returns show payment-required copy and can be removed only from My Bookings
+  ok provisional unpaid bookings stay agent-visible but remain hidden from operational portals
+  ok remove-from-bookings eligibility requires an abandoned agent gateway checkout
+  ok agent booking handles Stripe and PayPal returns
+  ok booking detail failures can be retried
+  ok invoices use backend amount and date fields
+  ok invoice booking links use booking_id
+  ok invoices render readable backend references
+  ok invoice failures are visible and retryable
+  ok agent message history is connected
+  ok agent support compose is connected
+  ok agent profile exposes business verification documents
+  ok locked agent bank identifiers remain masked after saving
+  ok agent profile uses the restructured shared portal tab and content layout without fleet controls
+  ok agent verification lists the required business document categories
+  ok agent verification waits for all required non-rejected uploads
+  ok rejected agent documents show re-upload instructions
+  ok blank optional agent business email is sent as null
+  ok agent profile advances after each completed onboarding module
+  ok agent profile keeps years in operation synchronized with the admin business record
+  ok admins select and can later change an agent operating currency
+  ok agent profile captures and saves monthly customer volume
+  ok commission requests notify admins in-app and by email
+  ok commission decisions notify the agent in-app and by email
+  ok agent portal uses the same workspace shell as supplier
+  ok agent inner pages use the shared portal page system
+  ok agent inner pages use consistent workspace headers
+  ok agent booking detail does not leak supplier brand colors
+  ok agent dashboard follows the supplier control-centre composition in agent blue
+  ok agent page system retains the calm blue visual identity
+  ok agent dashboard prioritizes list and catalogue actions
+  ok agent catalogue exposes reserve and full-payment actions
+  ok agent dashboard keeps mobile booking statuses and View actions in separate columns
+  ok agent tour cards give all mobile purchase actions dedicated rows
+  ok agent booking table uses a compact mobile width with wrapped status badges
+  ok agent booking action is preserved into settlement
+  ok agent Reserve Now is a no-deposit invoice flow
+  ok agent tour-detail Reserve Now never charges a deposit
+  ok agent booking creation uses the shared public booking workflow
+  ok agent portal uses the calm blue theme
+  ok agent sidebar uses a subtle divider instead of a blue edge rail
+  ok agent primary UI no longer uses saturated orange
+
+Agent flow: 91 passed, 0 failed
+
+============================================================
+Running: admin-flow.test.mjs
+============================================================
+
+=== Admin Console Flow ===
+
+  ok admin routes accept admin, super-admin, and sub-admin dashboard types
+  ok portal users return to their own dashboard
+  ok unauthenticated admin routes use dedicated admin login
+  ok admin root opens the dedicated admin login
+  ok admin login accepts administration dashboard types only
+  ok global auth separates admin and portal login routes
+  ok admin-created users retain normalized phone
+  ok admin user password validation matches backend strength
+  ok admin users can filter Affiliate accounts
+  ok admin user reactivation uses its dedicated endpoint
+  ok admin user activation errors remain visible
+  ok reactivation control is not silently disabled by stale verification data
+  ok private documents are fetched with authenticated API client
+  ok private documents are opened from authenticated blobs
+  ok admin review filters use one clearable start-to-end calendar
+  ok portal country forms load the complete catalogue while the header keeps its public active-country source
+  ok all dashboard and report date filters use the shared range calendar
+  ok affiliate directory includes the shared country and date-range filters
+  ok wide admin tables expose dynamic horizontal navigation controls before the table footer
+  ok admin can create suppliers, agents, and affiliates through slash-safe proxy routes
+  ok add-city loads states from the modal country and normalizes an optional state
+  ok city controls use city permissions and newly added states invalidate geo cache
+  ok admin supplier creation collects login details, country, and operating currency
+  ok admin agent and affiliate creation collect login details and display numeric ids
+  ok admin registration passwords can be shown and hidden
+  ok Country Pages restrict persisted field lengths and let editors clear optional content
+  ok Country Pages do not offer a country that already has a page
+  ok shared action modals close with Escape or a backdrop click when not saving
+  ok supplier commission banner omits the misleading approve request action
+  ok supplier vehicle cards exclude the admin-only inspection date
+  ok supplier detail only shows operational data suppliers can provide
+  ok supplier document review uses private document service
+  ok supplier document and vehicle filenames stay within their cards
+  ok agent document review uses private document service
+  ok admin can approve and reject individual agent documents
+  ok admin booking create contract uses backend traveller counts
+  ok booking filters use backend booking_status
+  ok admin confirms cancellation requests through the cancellation workflow
+  ok booking detail can confirm or decline a customer cancellation request
+  ok admin booking detail renders serialized add-on snapshots
+  ok admin booking detail exposes all note channels
+  ok admin booking detail removes the legacy communications log in favour of portal messages
+  ok admin booking detail shows customer and agent portal messages for the same booking
+  ok admin can reply separately to supplier and agent or customer booking messages
+  ok admin booking detail mirrors supplier and agent settlement fields
+  ok admin financial breakdown excludes markup and deducts partner commission from Tourvaa revenue
+  ok admin can make a customer-requested travel date change with calendar validation
+  ok payment operations use capture, void, refund, and status contracts
+  ok admin payment list keeps long gateway references and customer details within their columns
+  ok invoice downloads carry authorization through blob requests
+  ok invoice downloads validate real PDFs and delay URL cleanup
+  FAIL invoice downloads use an authenticated portal-scoped helper
+  ok dashboard approval actions call the supplier approve endpoint
+  ok dashboard links pending agents to their review page instead of approving inline
+  ok tour review uses version approval endpoints
+  ok tour review guard matches backend publish permission
+  ok tour approval titles link to the admin tour editor
+  ok tour approval compares pending submissions with the last approved baseline
+  ok admin tours only offer Publish when the backend marks a tour review-ready
+  ok tour status failures show the backend workflow message
+  ok admin tour View Live uses the canonical country and tour slug URL
+  ok refund screen uses a permission accepted by cancellation APIs
+  ok admin reports print every result row in a dedicated A4 report view
+  ok admin report print hides portal chrome
+  ok admin navigation exposes tour approvals
+  ok admin navigation exposes cancellations and refunds
+  ok admin tour create and edit share the upgraded workspace header
+  ok admin tour creation shows guided completion stages
+  ok admin tour editor uses the common tab and content-card workflow
+  ok admin tour sections support explicit step completion
+  ok embedded edit form avoids a duplicate workspace header
+
+Admin flow: 70 passed, 1 failed
+
+============================================================
+Running: overall-flow.test.mjs
+============================================================
+
+=== Overall Frontend Flow ===
+
+  ok shared password validator matches backend special-character rule
+  ok shared password guidance describes the full backend rule
+  ok login preserves customer portal redirects
+  ok login preserves supplier portal redirects
+  ok login preserves agent portal redirects
+  ok login preserves affiliate portal redirects
+  ok login rejects redirects outside the authenticated role portal
+  ok chat booking uses the customer portal endpoint
+  ok chat no longer calls the nonexistent customers-me booking route
+  ok chat login guidance points to the frontend login page
+  ok Scout launcher reveals its label only on hover or keyboard focus
+  ok Scout launcher stays out of the way while visitors scroll down catalogue cards
+  ok homepage does not ship fictional tour or destination fallbacks
+  ok homepage tour cards do not invent ratings or discounts
+  ok homepage has truthful empty collection states
+  ok homepage fallbacks use bundled images
+  ok homepage reveal blocks have a visible fallback when observer delivery is delayed
+  ok compare only marks accommodation included with explicit matching data
+  ok deals page does not repeat the same catalogue in country and category rails
+  ok newsletter calls its email action Subscribe
+  ok public layout loads settings once for all public contact surfaces
+  ok public contact surfaces use configured support details
+  ok public contact surfaces contain no hardcoded Tourvaa contact links
+  ok legal pages return authenticated users to their role dashboard
+  ok public contact combines a selected country code with a country-validated local mobile number
+  ok CMS partner cards retain live supplier, agent, and contact destination fallbacks
+  ok legacy seeded contact placeholders are suppressed
+  ok public footer fetches its link sections from the CMS
+  ok country catalogue pages keep the shared header but omit only their marketing footer
+  ok partner landing pages use complete independently editable public footers
+  ok partner header sends each role to its dedicated contact desk and exposes a registration CTA
+  ok agent portal section navigation targets real anchored sections
+  ok public pages capture affiliate referral codes
+  ok affiliate clicks use the backend public tracking endpoint
+  ok duplicate referral clicks are suppressed per browser session
+  ok server-tracked short links retain referral attribution without a duplicate click
+  ok forgot-password uses the shared public header layout
+  ok forgot-password clears the fixed public header
+  ok reset-password uses the shared public header layout
+  ok reset-password clears the fixed public header
+  ok affiliate links use the server-tracked short link format
+  ok affiliate links retain their referral code
+  ok unsupported referral update endpoint is not called
+  ok unsupported referral delete endpoint is not called
+  ok affiliate dashboard uses commission summary API
+  ok affiliate dashboard uses serialized click totals
+  ok affiliate dashboard uses converted_at timestamp
+  ok dashboard requires the provisioned affiliate id
+  ok dashboard does not fall back to the unrelated user id
+  ok referral-links requires the provisioned affiliate id
+  ok referral-links does not fall back to the unrelated user id
+  ok clicks requires the provisioned affiliate id
+  ok clicks does not fall back to the unrelated user id
+  ok conversions requires the provisioned affiliate id
+  ok conversions does not fall back to the unrelated user id
+  ok commissions requires the provisioned affiliate id
+  ok commissions does not fall back to the unrelated user id
+  ok profile requires the provisioned affiliate id
+  ok profile does not fall back to the unrelated user id
+  ok payouts uses session-scoped self-service endpoints
+  ok payouts does not fall back to the unrelated user id
+  ok affiliate payout history is read-only while the balance remains visible
+  ok affiliate profile update uses backend PATCH self-service contract
+  ok affiliate profile sends supported website_url field
+  ok affiliate self-edit has no approval-permission gate blocking it
+  ok affiliate application submits through the real registration endpoint, not a mailto stub
+  ok affiliate application surfaces a real failure state if the API call fails
+  ok shared image uploads accept AVIF
+  ok admin asset uploads preview and explain AVIF
+  ok admin asset uploads allow Cloudinary time for 10MB images and PDFs
+  ok profile image uploads use shared AVIF formats
+  ok supplier and agent uploads share AVIF acceptance
+  ok header notifications de-duplicate requests and poll only when visible
+  ok admin notifications no longer poll on a timer
+  ok notification refresh is driven by explicit app and push events
+  ok push worker tells open pages when a notification arrives
+  ok notifications retain entity ids and safe direct actions
+  ok admin notification clicks recover safe entity routes
+  ok booking messages recover drafts and queue only explicit offline sends
+
+Overall flow: 79 passed, 0 failed
+
+============================================================
+Running: responsive-flow.test.mjs
+============================================================
+
+=== Responsive Frontend Flow ===
+
+  ok document clips accidental horizontal overflow
+  ok mobile controls avoid automatic browser zoom
+  ok dynamic viewport height is supported
+  ok admin content can shrink without horizontal overflow
+  ok admin mobile drawer fits narrow screens
+  ok public marketing navigation waits for desktop width
+  ok public header preserves a shrinkable flex row
+  ok desktop header exposes account and trip tools navigation
+  ok mobile public header pins the logo left and utility controls to the real right edge
+  ok mobile trust highlights begin with a complete first item and loop continuously while desktop remains static
+  ok mobile navigation uses smart-sticky scrolling (reveals on scroll up, hides on scroll down)
+  ok mobile navigation hides the floating translator until its drawer closes
+  ok partner landing pages use optimized local hero images
+  ok partner landing heroes adapt across mobile and desktop
+  ok partner landing motion respects reduced-motion preferences
+  ok portal header reserves a language widget lane
+  ok customer header has compact mobile height
+  ok customer profile menu is viewport bounded
+  ok customer portal suppresses the external translator in the compact mobile header
+  ok tables scroll horizontally on narrow screens
+  ok pagination controls use the full mobile width
+  ok src/components/operations/ActionModal.tsx stays inside short mobile viewports
+  ok src/components/ui/ConfirmDialog.tsx stays inside short mobile viewports
+  ok src/components/bookings/BookingPaymentModal.tsx stays inside short mobile viewports
+  ok src/components/customers/SendCustomerMessageModal.tsx stays inside short mobile viewports
+  ok src/components/common/DynamicModulePage.tsx stays inside short mobile viewports
+  ok customer bookings list stacks on narrow screens without horizontal overflow
+
+Responsive flow: 27 passed, 0 failed
+
+============================================================
+FRONTEND TEST SUMMARY
+============================================================
+  ✓ module-routes.test.mjs
+  ✓ module-services.test.mjs
+  ✓ module-permissions.test.mjs
+  ✓ module-components.test.mjs
+  ✓ dashboard.test.mjs
+  ✗ auth-flow.test.mjs
+  ✓ api-contract.test.mjs
+  ✓ currency-flow.test.mjs
+  ✓ country-destination-flow.test.mjs
+  ✗ calendar-flow.test.mjs
+  ✗ metadata-flow.test.mjs
+  ✗ customer-flow.test.mjs
+  ✓ supplier-flow.test.mjs
+  ✓ agent-flow.test.mjs
+  ✗ admin-flow.test.mjs
+  ✓ overall-flow.test.mjs
+  ✓ responsive-flow.test.mjs
+
+Suites: 12 passed, 5 failed

@@ -1,0 +1,50 @@
+sequenceDiagram
+    autonumber
+    actor Cust as Customer / Agent
+    participant FE as Next.js Storefront / Portal
+    participant API as FastAPI Backend
+    participant DB as MySQL Database
+    participant Stripe as Stripe Gateway
+    participant Sup as Supplier Portal
+    participant Admin as Tourvaa Operations
+    participant Worker as Background Sweeper
+
+    Cust->>FE: Select Tour & Travel Date
+    FE->>API: GET /api/tours/{id}/availability-schedule
+    API->>DB: Query TourCalendar (available_seats >= passenger_count)
+    API-->>FE: Return Departure Slots & Pricing
+    
+    Cust->>FE: Fill Traveller Details & Click "Reserve"
+    FE->>API: POST /api/checkout/create-session
+    API->>DB: Insert Booking (status: 'draft', payment_status: 'unpaid')
+    API->>DB: Decrement TourCalendar available_seats (Hold seats)
+    API->>Stripe: Create Checkout Session (capture_method: 'manual')
+    API-->>FE: Return Stripe Checkout URL & Booking Code
+
+    Cust->>Stripe: Approves Card Authorization
+    Stripe-->>API: Webhook (checkout.session.completed)
+    API->>DB: Insert PaymentHold & Payment (status: 'authorized')
+    API->>DB: Transition Booking -> 'payment_authorized'
+    API->>DB: Notify Assigned Supplier (Notification & Email)
+    API->>DB: Transition Booking -> 'pending_supplier_acceptance'
+
+    alt Supplier Accepts within 4 Days
+        Sup->>API: POST /api/bookings/{id}/supplier-decision (action: 'accept')
+        API->>DB: Transition Booking -> 'supplier_accepted'
+        API->>Admin: Notify Tourvaa Operations ("Supplier accepted booking")
+        
+        Admin->>API: POST /api/bookings/{id}/confirm
+        API->>Stripe: POST /v1/payment_intents/{id}/capture (Capture Authorized Hold)
+        API->>DB: Update Payment (status: 'completed', amount_paid: full/deposit)
+        API->>DB: Transition Booking -> 'confirmed'
+        API->>DB: Generate Confirmation Receipt PDF (confirmation_receipts.py)
+        API->>DB: Generate Customer Invoice (invoices.py)
+        API->>Cust: Dispatch Booking Confirmation Email with Attached PDF Receipt
+        API->>DB: Credit Supplier Ledger (Net tour cost less commission)
+    else Supplier Declines or Times Out
+        Worker->>API: _payment_hold_loop() runs (every 60m)
+        Worker->>Stripe: Cancel PaymentIntent (Release Card Authorization Hold)
+        Worker->>DB: Release TourCalendar seats
+        Worker->>DB: Transition Booking -> 'cancelled' / 'declined'
+        Worker->>Cust: Send Apology Email & Offer Alternative Dates
+    end

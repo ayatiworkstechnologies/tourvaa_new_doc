@@ -1,0 +1,36 @@
+stateDiagram-v2
+    [*] --> draft: Customer initiates booking
+
+    draft --> pending_payment: Checkout started
+    draft --> cancelled: Abandoned
+
+    pending_payment --> payment_authorized: Gateway Pre-Auth Hold
+    pending_payment --> pending_supplier_assignment: Unassigned / Agent Booking
+    pending_payment --> cancelled: Stale Unpaid Expiry (60m)
+
+    payment_authorized --> pending_supplier_acceptance: Supplier Notified
+    pending_supplier_assignment --> pending_supplier_acceptance: Admin Assigns Supplier
+
+    pending_supplier_acceptance --> supplier_accepted: Supplier Accepts Request
+    pending_supplier_acceptance --> supplier_reassignment_required: Supplier Declines
+    pending_supplier_acceptance --> cancelled: 4-Day Hold Expiry Sweep
+
+    supplier_reassignment_required --> pending_supplier_assignment: Admin Reassigns
+    supplier_reassignment_required --> declined: No Alternative Supplier
+
+    supplier_accepted --> confirmed: Tourvaa Admin Confirms & Gateway Captures
+    supplier_accepted --> cancelled: Pre-Confirmation Cancellation
+
+    confirmed --> ready_to_travel: Voucher & Receipt Issued
+    ready_to_travel --> ongoing: Tour Departure Date Reached
+    ongoing --> completed: Tour End Date Reached
+
+    confirmed --> cancellation_requested: Customer / Agent Requests Cancellation
+    cancellation_requested --> confirmed: Cancellation Rejected
+    cancellation_requested --> cancelled: Cancellation Approved (Refund Applied)
+    
+    declined --> refunded: Gateway Pre-Auth Released / Refunded
+    cancelled --> refunded: Funds Credited to Customer
+
+    completed --> [*]
+    refunded --> [*]

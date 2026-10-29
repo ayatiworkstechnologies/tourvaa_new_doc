@@ -1,0 +1,53 @@
+sequenceDiagram
+    autonumber
+    actor User as User / Portal Visitor
+    participant Browser as Web Browser
+    participant FE as Next.js Frontend
+    participant API as FastAPI Backend (/api/auth)
+    participant DB as MySQL Database
+    participant SMTP as SMTP Mailer
+
+    User->>Browser: Enters Email & Password
+    Browser->>FE: Submit Form Data
+    FE->>API: POST /api/auth/login (email, password)
+    
+    API->>DB: Query User by Email
+    alt User Not Found or Inactive
+        API-->>FE: 401 Unauthorized ("Invalid credentials")
+    end
+
+    alt Account Locked (locked_until > now)
+        API-->>FE: 403 Forbidden ("Account locked due to failed attempts")
+    end
+
+    API->>API: verify_password(plaintext, stored_bcrypt_hash)
+    alt Password Invalid
+        API->>DB: Increment failed_login_attempts
+        opt failed_login_attempts >= 5
+            API->>DB: Set locked_until = now() + 15 minutes
+        end
+        API-->>FE: 401 Unauthorized ("Invalid credentials")
+    end
+
+    API->>DB: Reset failed_login_attempts = 0
+
+    alt 2FA Enabled on Account
+        API-->>FE: 200 OK (requires_2fa: true, temp_token: JWT)
+        FE->>User: Prompt for 6-Digit TOTP / Backup Code
+        User->>FE: Enter OTP
+        FE->>API: POST /api/auth/2fa/verify (temp_token, code)
+        API->>API: Verify TOTP via pyotp or validate backup code
+    end
+
+    API->>API: Determine Role & Portal (admin vs normal domain)
+    API->>API: Sign Access JWT (exp: 24h) with domain secret
+    API->>API: Sign Refresh JWT (exp: 30d, jti: uuid4)
+    
+    API->>DB: Insert into user_sessions (user_id, jti, ip, user_agent, expires_at)
+    API->>DB: Insert into login_history (status: success)
+    
+    API-->>FE: Set httpOnly cookies: 'tourvaa_access' & 'tourvaa_refresh'
+    API-->>FE: Return user profile JSON
+    
+    FE->>FE: Update AuthProvider State
+    FE->>Browser: Redirect to User Portal Dashboard

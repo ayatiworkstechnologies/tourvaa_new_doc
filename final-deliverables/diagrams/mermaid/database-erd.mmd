@@ -1,0 +1,56 @@
+erDiagram
+    ROLES ||--o{ USERS : "assigned to"
+    ROLES ||--o{ ROLE_PERMISSIONS : "defines"
+    PERMISSIONS ||--o{ ROLE_PERMISSIONS : "granted via"
+    
+    USERS ||--o| CUSTOMERS : "profiles"
+    USERS ||--o| SUPPLIERS : "operates as"
+    USERS ||--o| AGENTS : "operates as"
+    USERS ||--o| AFFILIATES : "operates as"
+    USERS ||--o{ USER_SESSIONS : "authenticates"
+    USERS ||--o{ AUDIT_LOGS : "acts in"
+    
+    COUNTRIES ||--o{ STATES : "contains"
+    STATES ||--o{ CITIES : "contains"
+    
+    COUNTRIES ||--o{ TOURS : "hosts"
+    CITIES ||--o{ TOURS : "departs from"
+    TOUR_CATEGORIES ||--o{ TOURS : "classifies"
+    SUPPLIERS ||--o{ TOURS : "provides"
+    
+    TOURS ||--o| TOUR_OVERVIEWS : "details"
+    TOURS ||--o{ TOUR_ITINERARIES : "schedules"
+    TOURS ||--o{ TOUR_PRICING : "costs"
+    TOURS ||--o{ TOUR_CALENDAR : "departs on"
+    TOURS ||--o{ TOUR_DISCOUNTS : "applies"
+    TOURS ||--o{ TOUR_VERSIONS : "versions"
+    
+    CUSTOMERS ||--o{ BOOKINGS : "places"
+    AGENTS ||--o{ BOOKINGS : "reserves"
+    SUPPLIERS ||--o{ BOOKINGS : "fulfills"
+    TOURS ||--o{ BOOKINGS : "reserved for"
+    AFFILIATE_ATTRIBUTIONS ||--o| BOOKINGS : "referred by"
+    
+    BOOKINGS ||--o{ BOOKING_TRAVELLERS : "includes"
+    BOOKINGS ||--o{ BOOKING_OPTIONAL_ACTIVITIES : "addons"
+    BOOKINGS ||--o{ BOOKING_ACCOMMODATIONS : "lodges"
+    BOOKINGS ||--o{ BOOKING_STATUS_HISTORY : "tracks"
+    BOOKINGS ||--o{ PAYMENTS : "paid via"
+    BOOKINGS ||--o{ INVOICES : "billed with"
+    BOOKINGS ||--o{ CANCELLATION_REQUESTS : "cancels"
+    BOOKINGS ||--o{ TOUR_REVIEWS : "rates"
+    
+    PAYMENTS ||--o{ PAYMENT_TRANSACTIONS : "logs"
+    PAYMENTS ||--o{ PAYMENT_HOLDS : "authorizes"
+    
+    SUPPLIERS ||--o{ SUPPLIER_LEDGERS : "credits"
+    SUPPLIERS ||--o{ SUPPLIER_PAYOUTS : "requests"
+    SUPPLIER_PAYOUTS ||--o{ SUPPLIER_PAYOUT_ITEMS : "aggregates"
+    
+    AGENTS ||--o{ AGENT_LEDGER : "earns"
+    
+    AFFILIATES ||--o{ AFFILIATE_LINKS : "shares"
+    AFFILIATE_LINKS ||--o{ AFFILIATE_CLICKS : "tracks"
+    AFFILIATE_CLICKS ||--o{ AFFILIATE_ATTRIBUTIONS : "attributes"
+    AFFILIATES ||--o{ AFFILIATE_CONVERSIONS : "earns"
+    AFFILIATES ||--o{ AFFILIATE_PAYOUTS : "withdraws"

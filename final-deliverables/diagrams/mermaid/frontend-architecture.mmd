@@ -1,0 +1,67 @@
+graph TD
+    subgraph APP_ROOT["Next.js App Root (src/app/)"]
+        ROOT_LAYOUT["RootLayout (src/app/layout.tsx)<br/>Fonts: Onest, Inter | HTML Shell"]
+        PROXY["Server Proxy Guard (src/proxy.ts)<br/>Checks tourvaa_access Session Cookie"]
+        
+        subgraph PROVIDERS["Global Context Providers (src/providers/)"]
+            AUTH_PROV["AuthProvider<br/>(User State, Login/Logout, Token Version)"]
+            SETTINGS_PROV["PublicSettingsProvider<br/>(Currency Master, Branding, Site Settings)"]
+            STORE_PROV["TravelStoreProvider<br/>(Cart, Wishlist, Compare, Draft Bookings)"]
+        end
+    end
+
+    subgraph PORTAL_SHELLS["Portal Layout Shells & Route Guards"]
+        PUBLIC_SHELL["%28public%29 Layout<br/>(Header, Nav, Footer, Elfsight Widget, Chatbot)"]
+        ADMIN_SHELL["admin/ Layout & AdminRouteGuard<br/>(Sidebar, TopBar, RBAC Permission Gate)"]
+        CUSTOMER_SHELL["customer/ Layout & ProtectedRoute<br/>(Customer Portal Navigation, Account Tabs)"]
+        SUPPLIER_SHELL["supplier/ Layout & ProtectedRoute<br/>(Supplier Nav, Approval Status Banner)"]
+        AGENT_SHELL["agent/ Layout & ProtectedRoute<br/>(Agent B2B Nav, Balance Alerts)"]
+        AFFILIATE_SHELL["affiliate/ Layout & ProtectedRoute<br/>(Affiliate Nav, Wallet Balance Bar)"]
+    end
+
+    subgraph PAGE_COMPONENTS["Feature Page Modules (src/components/)"]
+        TOURS_UI["Tours & Catalog UI<br/>(TourGrid, TourDetails, TourWizard, TourCalendar)"]
+        BOOKING_UI["Booking & Checkout UI<br/>(CheckoutForm, TravellerList, PaymentModal)"]
+        CMS_UI["CMS & Content Management<br/>(BannerManager, BlogEditor, PolicyManager)"]
+        FINANCE_UI["Invoices, Ledgers & Payouts<br/>(InvoiceList, LedgerTable, PayoutRequestModal)"]
+        MESSAGING_UI["Messaging & Support UI<br/>(ThreadView, SocketPresence, ChatbotWidget)"]
+        REPORTS_UI["Analytics & Reporting UI<br/>(Recharts Visualizations, DateFilters, ExcelExport)"]
+    end
+
+    subgraph API_CLIENT["API Client Layer (src/lib/api/)"]
+        CLIENT_AXIOS["Axios Instance (src/lib/api/client.ts)<br/>withCredentials: true, Automatic 401 Redirect"]
+        PUBLIC_AXIOS["Public Axios Instance (src/lib/api/publicClient.ts)<br/>Cached GET Requests for Public Catalog"]
+        WS_CLIENT["WebSocket Hook (src/hooks/useMessagingSocket.ts)<br/>Ticket Exchange & Auto-Reconnect"]
+    end
+
+    %% Hierarchy flows
+    ROOT_LAYOUT --> PROXY
+    PROXY --> PROVIDERS
+    PROVIDERS --> PORTAL_SHELLS
+    
+    PUBLIC_SHELL --> TOURS_UI
+    PUBLIC_SHELL --> BOOKING_UI
+    PUBLIC_SHELL --> MESSAGING_UI
+    
+    ADMIN_SHELL --> CMS_UI
+    ADMIN_SHELL --> FINANCE_UI
+    ADMIN_SHELL --> REPORTS_UI
+    ADMIN_SHELL --> TOURS_UI
+    
+    CUSTOMER_SHELL --> BOOKING_UI
+    CUSTOMER_SHELL --> FINANCE_UI
+    CUSTOMER_SHELL --> MESSAGING_UI
+    
+    SUPPLIER_SHELL --> TOURS_UI
+    SUPPLIER_SHELL --> FINANCE_UI
+    SUPPLIER_SHELL --> BOOKING_UI
+    
+    AGENT_SHELL --> BOOKING_UI
+    AGENT_SHELL --> FINANCE_UI
+    
+    AFFILIATE_SHELL --> FINANCE_UI
+
+    %% Client data bindings
+    PAGE_COMPONENTS --> CLIENT_AXIOS
+    PAGE_COMPONENTS --> PUBLIC_AXIOS
+    PAGE_COMPONENTS --> WS_CLIENT
