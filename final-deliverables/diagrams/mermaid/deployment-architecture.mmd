@@ -1,28 +1,28 @@
-flowchart TD
-    subgraph INTERNET["Public Internet"]
-        USERS["Visitors, Customers & Partners"]
-        ADMINS["Tourvaa Staff & Administrators"]
-        WEBHOOKS["Stripe & PayPal Webhook Events"]
+flowchart TB
+    subgraph USERS_TIER["External Traffic Sources"]
+        USERS["Public Travellers (Storefront)"]
+        ADMINS["Tourvaa Staff and Administrators"]
+        WEBHOOKS["Stripe and PayPal Webhook Events"]
     end
 
-    subgraph CLOUD_EDGE["Edge & Ingress (Cloudflare / Reverse Proxy)"]
-        EDGE_ROUTER["Reverse Proxy / SSL Ingress (Nginx / Traefik / Cloudflare)<br/>TLS 1.3 Termination | Strict HTTP Security Headers"]
+    subgraph CLOUD_EDGE["Edge and Ingress (Cloudflare / Reverse Proxy)"]
+        EDGE_ROUTER["Reverse Proxy / SSL Ingress (Nginx / Traefik / Cloudflare)<br/>TLS 1.3 Termination - Strict HTTP Security Headers"]
     end
 
     subgraph DOCKER_HOST["Production Container Host (Docker / Container Cluster)"]
         subgraph FRONTEND_CONTAINER["Frontend Service (tourvaa-admin-frontend)"]
-            NODE_SERVER["Node.js 22 Standalone Server (server.js)<br/>Port 3000 | Non-Root user: nextjs<br/>Healthcheck: fetch('http://127.0.0.1:3000/')"]
+            NODE_SERVER["Node.js 22 Standalone Server (server.js)<br/>Port 3000 - Non-Root user: nextjs<br/>Healthcheck: fetch 127.0.0.1:3000"]
         end
 
         subgraph BACKEND_CONTAINER["Backend Service (tourvaa-admin-backend)"]
             ENTRYPOINT["docker-entrypoint.sh<br/>Alembic upgrade head (retries 30x)"]
-            UVICORN_PROC["Uvicorn ASGI Server (app.main:app)<br/>Port 8000 | Non-Root user: tourvaa<br/>Healthcheck: GET /api/health"]
+            UVICORN_PROC["Uvicorn ASGI Server (app.main:app)<br/>Port 8000 - Non-Root user: tourvaa<br/>Healthcheck: GET /api/health"]
             ENTRYPOINT --> UVICORN_PROC
         end
 
         subgraph PERSISTENCE_CONTAINERS["Persistence Services"]
-            MYSQL_SRV[("MySQL 8.0+ Database Server<br/>Port 3306 | InnoDB Engine<br/>Volume: mysql_data")]
-            REDIS_SRV[("Redis Server (redis:8.0)<br/>Port 6379 | Appendonly: yes<br/>Volume: redis_data")]
+            MYSQL_SRV[("MySQL 8.0+ Database Server<br/>Port 3306 - InnoDB Engine<br/>Volume: mysql_data")]
+            REDIS_SRV[("Redis Server (redis:8.0)<br/>Port 6379 - Appendonly: yes<br/>Volume: redis_data")]
         end
 
         subgraph VOLUMES["Host Mounted Volumes"]
@@ -38,25 +38,21 @@ flowchart TD
         PAYPAL_API["PayPal Sandbox & Live REST API"]
     end
 
-    %% Inbound connections
-    USERS -->|HTTPS :443| EDGE_ROUTER
-    ADMINS -->|HTTPS :443| EDGE_ROUTER
-    WEBHOOKS -->|HTTPS :443| EDGE_ROUTER
+    USERS -->|"HTTPS Port 443"| EDGE_ROUTER
+    ADMINS -->|"HTTPS Port 443"| EDGE_ROUTER
+    WEBHOOKS -->|"HTTPS Port 443"| EDGE_ROUTER
 
-    %% Edge to containers
-    EDGE_ROUTER -->|HTTP :3000 (Storefront & Portals)| NODE_SERVER
-    EDGE_ROUTER -->|WSS :8000 (/api/ws/messages)| UVICORN_PROC
-    EDGE_ROUTER -->|HTTP :8000 (Webhook Endpoints)| UVICORN_PROC
+    EDGE_ROUTER -->|"HTTP Port 3000"| NODE_SERVER
+    EDGE_ROUTER -->|"WSS Port 8000 (/api/ws/messages)"| UVICORN_PROC
+    EDGE_ROUTER -->|"HTTP Port 8000 (Webhook Endpoints)"| UVICORN_PROC
 
-    %% Container to container
-    NODE_SERVER -->|Internal HTTP Proxy (/api/*)| UVICORN_PROC
-    UVICORN_PROC -->|TCP :3306 (SQLAlchemy)| MYSQL_SRV
-    UVICORN_PROC -->|TCP :6379 (Locks & WS)| REDIS_SRV
+    NODE_SERVER -->|"Internal HTTP Proxy (/api/*)"| UVICORN_PROC
+    UVICORN_PROC -->|"TCP Port 3306 (SQLAlchemy)"| MYSQL_SRV
+    UVICORN_PROC -->|"TCP Port 6379 (Locks & WS)"| REDIS_SRV
     UVICORN_PROC -->|Filesystem Mount| STOR_VOL
     UVICORN_PROC -->|Filesystem Mount| PRIV_VOL
 
-    %% Backend to external
     UVICORN_PROC -->|REST API| CLOUDINARY_CDN
-    UVICORN_PROC -->|SMTP TLS :465| SMTP_RELAY
+    UVICORN_PROC -->|"SMTP TLS Port 465"| SMTP_RELAY
     UVICORN_PROC -->|HTTPS API| STRIPE_API
     UVICORN_PROC -->|HTTPS API| PAYPAL_API

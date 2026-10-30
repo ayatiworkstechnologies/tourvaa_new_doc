@@ -62,3 +62,4 @@ To showcase the platform effectively to different stakeholders:
 
 3. **For Engineering Team Onboarding:**
    - Provide **PDF 4 ([Developer KT & Handover Guide](file:///d:/ayatiworks/2026/tourvaa/technical-documentation/final-deliverables/Developer_KT_and_Handover.pdf))** to incoming developers for setup, architecture walkthroughs, and operational playbooks.
+

@@ -1,10 +1,33 @@
-# TOURVAA PLATFORM: SYSTEM ARCHITECTURE & DIAGRAMS REFERENCE
+# Tourvaa Travel Platform — System Architecture & Complete Flowcharts Reference
 
-
+**Document Classification:** Enterprise Architecture Blueprint & Complete Workflow Specifications  
+**Audience:** Solutions Architects, Engineering Leads, Full-Stack Developers, DevOps/SRE, Technical Auditors  
+**System Scope:** Full-Stack Architecture, 20 Business Modules, Database Topology, and Operational Sequences  
+**Date:** 2026-10-30  
+**Version:** 2.0.0 (Production Verified)  
 
 ---
 
-# 03 — System Architecture & Component Interaction
+## Executive Architecture Summary
+
+This reference publication contains the complete set of **37 production architecture diagrams and business workflow flowcharts** for the Tourvaa travel marketplace. It provides an exhaustive, multi-tier visual specification of system topology, client-edge interaction, API service lifecycle, relational data models, asynchronous worker sweeps, and all 20 business domain workflows.
+
+```
+========================================================================================================
+                          TOURVAA COMPLETE ARCHITECTURE & DIAGRAMS INDEX
+========================================================================================================
+  • SECTION 1: Core System Architecture & Topology (6 Primary Tier Diagrams)
+  • SECTION 2: End-to-End Business Module Workflows (20 Domain Workflow Flowcharts)
+  • SECTION 3: Operational Sequences, State Machines & Handover Lifecycles (11 Detailed Flowcharts)
+  • Total Visual Diagrams & Flowcharts: 37 Verified Production Specifications
+========================================================================================================
+```
+
+---
+
+# SECTION 1: Core System Architecture & Topology
+
+## 03 — System Architecture & Component Interaction
 
 ## 1. Architectural Philosophy
 
@@ -37,14 +60,15 @@ flowchart TB
 ```
 
 Detailed architectural diagrams and component walkthroughs are available in:
-- [System Architecture Diagram](../../diagrams/system-architecture.md)
-- [Frontend Component Architecture](../../diagrams/frontend-architecture.md)
-- [Backend Architecture & Request Lifecycle](../../diagrams/backend-architecture.md)
-- [Module Dependencies Diagram](../../diagrams/module-dependencies.md)
+- [System Architecture Diagram](diagrams/system-architecture.md)
+- [Frontend Component Architecture](diagrams/frontend-architecture.md)
+- [Backend Architecture & Request Lifecycle](diagrams/backend-architecture.md)
+- [Module Dependencies Diagram](diagrams/module-dependencies.md)
+
 
 ---
 
-# 05 — Frontend Architecture & Component Design
+## 05 — Frontend Architecture & Component Design
 
 ## 1. Next.js 16 App Router Structure
 
@@ -69,12 +93,12 @@ Next.js 16 replaced the traditional `middleware.ts` convention with `proxy.ts`. 
 
 ## 3. Global Context Providers
 
-1. **`AuthProvider` ([`src/providers/AuthProvider.tsx`](../../../tourvaa-admin-frontend/src/providers/AuthProvider.tsx))**:
+1. **`AuthProvider` ([`src/providers/AuthProvider.tsx`](../../tourvaa-admin-frontend/src/providers/AuthProvider.tsx))**:
    - Manages active user authentication state, current role claims, and user profile data.
    - Listens for token invalidation events (e.g. password resets or remote session termination).
-2. **`PublicSettingsProvider` ([`src/providers/PublicSettingsProvider.tsx`](../../../tourvaa-admin-frontend/src/providers/PublicSettingsProvider.tsx))**:
+2. **`PublicSettingsProvider` ([`src/providers/PublicSettingsProvider.tsx`](../../tourvaa-admin-frontend/src/providers/PublicSettingsProvider.tsx))**:
    - Fetches and caches global platform configuration, currency exchange rates, company branding, and active payment gateway toggles.
-3. **`TravelStoreProvider` ([`src/providers/TravelStoreProvider.tsx`](../../../tourvaa-admin-frontend/src/providers/TravelStoreProvider.tsx))**:
+3. **`TravelStoreProvider` ([`src/providers/TravelStoreProvider.tsx`](../../tourvaa-admin-frontend/src/providers/TravelStoreProvider.tsx))**:
    - Manages client-side shopping cart state, tour comparison lists, and customer wishlist items backed by `localStorage`.
 
 ---
@@ -90,11 +114,12 @@ All browser HTTP requests to `/api/*` and `/storage/*` are proxied to the backen
 ```
 This ensures that the frontend communicates with the backend as a **same-origin service**, allowing secure, `httpOnly`, `SameSite=Lax` cookies to be exchanged without exposing raw JWTs to client-side JavaScript.
 
-The complete frontend route inventory is cataloged in [`inventories/frontend-routes.md`](../../inventories/frontend-routes.md).
+The complete frontend route inventory is cataloged in [`inventories/frontend-routes.md`](inventories/frontend-routes.md).
+
 
 ---
 
-# 06 — Backend Architecture & Service Layer Design
+## 06 — Backend Architecture & Service Layer Design
 
 ## 1. Application Architecture
 
@@ -104,7 +129,7 @@ The backend is built with **FastAPI 0.139.2** (locked in `requirements.txt`; upg
 
 ## 2. Startup Lifecycle & Production Verification (`_lifespan`)
 
-FastAPI's async lifespan context manager in [`app/main.py`](../../../tourvaa-admin-backend/app/main.py) enforces strict startup safety gates:
+FastAPI's async lifespan context manager in [`app/main.py`](../../tourvaa-admin-backend/app/main.py) enforces strict startup safety gates:
 1. **`validate_database_migration_head()`**: Compares running database heads against Alembic code heads. Aborts if migrations are pending.
 2. **`validate_production_config()`**: In production (`APP_ENV != "development"`), ensures debug is disabled, JWT secrets are >= 32 characters, and webhook secrets are present.
 3. **`validate_worker_concurrency()`**: Enforces that `REDIS_URL` is set whenever `WEB_CONCURRENCY > 1`.
@@ -138,9 +163,10 @@ Requests pass through four specialized middlewares:
 - `_chat_retention_loop`: Sweeps every 24 hours; purges chat logs older than 90 days.
 - `_data_retention_loop`: Sweeps every 24 hours; prunes stale user sessions and email delivery logs.
 
+
 ---
 
-# 08 — Database Schema & Data Architecture
+## 08 — Database Schema & Data Architecture
 
 ## 1. Database Engine & ORM Configuration
 
@@ -172,11 +198,14 @@ Requests pass through four specialized middlewares:
 9. **CMS & Engagement**: `cms_homepage_banners`, `cms_popular_destinations`, `cms_popular_tours`, `cms_blogs`, `cms_customer_reviews`, `cms_policies`.
 10. **Communications & AI**: `conversations`, `messages`, `notifications`, `notification_deliveries`, `chat_faqs`, `chat_sessions`, `chat_messages`, `chat_embeddings`.
 
-The complete schema reference of all 138 tables and columns is cataloged in [`inventories/database-tables.md`](../../inventories/database-tables.md).
+The complete schema reference of all 138 tables and columns is cataloged in [`inventories/database-tables.md`](inventories/database-tables.md).
+
 
 ---
 
-# System Architecture Diagram & Walkthrough
+# SECTION 2: Dedicated Architectural Blueprints & Data Flows
+
+## 1.1 High-Level Multi-Tier System Topology
 
 This document illustrates the end-to-end system architecture of the Tourvaa travel platform, showing the multi-tier boundaries between users, frontend edge layers, backend API services, asynchronous workers, persistence layers, and external service providers.
 
@@ -190,8 +219,8 @@ flowchart TB
         BROWSER["Web Browser / Mobile Client<br/>(Desktop, Tablet, Mobile)"]
     end
 
-    subgraph EDGE["Edge & Routing Tier (Next.js 16)"]
-        PROXY["Next.js Proxy (../../src/proxy.ts)<br/>Cookie Verification & Route Shield"]
+    subgraph EDGE["Edge and Routing Tier (Next.js 16)"]
+        PROXY["Next.js Proxy (src/proxy.ts)<br/>Cookie Verification and Route Shield"]
         REWRITE["Next.js Route Proxy (next.config.ts)<br/>Rewrites /api and /storage"]
         SSR["Server Component Rendering<br/>(React 19 / Next.js)"]
         SPA["Client-Side Portals (SPA)<br/>Admin / Supplier / Agent / Affiliate / Customer"]
@@ -200,40 +229,40 @@ flowchart TB
     subgraph API_TIER["FastAPI Application Tier (Port 8000)"]
         UVICORN["Uvicorn ASGI Server<br/>(Multi-Worker Concurrency)"]
         MIDDLEWARE["Middleware Stack<br/>(CORS, ApiNoStore, CSRF, ErrorHandlers)"]
-        ROUTERS["API Routers (51 Modular Routers)<br/>(/api/* and /r/*)"]
-        AUTH_GUARD["Authentication & RBAC<br/>(Dual JWT Domain & RolePermission Checker)"]
+        ROUTERS["API Routers (51 Modular Routers)<br/>(api and r routes)"]
+        AUTH_GUARD["Authentication and RBAC<br/>(Dual JWT Domain and Role Checker)"]
         SERVICES["Domain Services Layer (56 Services)<br/>(Bookings, Payments, Tours, Ledgers, etc.)"]
-        WS_HANDLER["WebSocket Hub (/api/ws/messages)<br/>(Realtime Messaging & Live Notifications)"]
+        WS_HANDLER["WebSocket Hub (/api/ws/messages)<br/>(Realtime Messaging and Live Notifications)"]
     end
 
-    subgraph BACKGROUND["Background Workers & Scheduled Sweeps"]
+    subgraph BACKGROUND["Background Workers and Scheduled Sweeps"]
         STALE_SWEEP["Stale Booking Expiry (15m)<br/>Releases Unpaid Calendar Seats"]
         HOLD_SWEEP["Payment Hold Release (60m)<br/>Releases Expired Gateway Authorizations"]
         CAPTURE_SWEEP["Payment Capture Retry (15m)<br/>Retries Accepted Booking Captures"]
         EMAIL_RETRY["Lifecycle Email Retry (15m)<br/>Exponential Backoff 1m/5m/25m"]
-        REMINDERS["Booking & Balance Reminders (60m)<br/>Automated Traveller & Agent Alerts"]
-        RETENTION["Data Retention Pruning (24h)<br/>Prunes Old Sessions & Chat Logs"]
+        REMINDERS["Booking and Balance Reminders (60m)<br/>Automated Alerts"]
+        RETENTION["Data Retention Pruning (24h)<br/>Prunes Old Sessions and Chat Logs"]
     end
 
-    subgraph STORAGE["Persistence & Data Tier"]
-        MYSQL[("MySQL 8.0+ Database<br/>(InnoDB Engine, 138 Tables)")]
-        REDIS[("Redis Cache & Pub/Sub<br/>(Distributed Lock & WS Relay)")]
-        LOCAL_DISK[("Private Disk Storage<br/>(private-docs: Invoices, Itineraries, Docs)")]
+    subgraph STORAGE["Persistence and Data Tier"]
+        MYSQL[("MySQL 8.0+ Database<br/>(InnoDB Engine, 139 Tables)")]
+        REDIS[("Redis Cache and Pub/Sub<br/>(Distributed Lock and WS Relay)")]
+        LOCAL_DISK[("Private Disk Storage<br/>(private-docs: Invoices, Receipts)")]
     end
 
     subgraph EXTERNAL["External Third-Party Services"]
-        STRIPE["Stripe Payment Gateway<br/>(Manual Capture & Webhooks)"]
-        PAYPAL["PayPal REST API<br/>(Authorize & Capture Orders)"]
-        CLOUDINARY["Cloudinary Media CDN<br/>(Public Tour & CMS Images)"]
-        VIATOR["Viator Partner API<br/>(External Day Trips & Experiences)"]
-        SMTP["SMTP Mail Server<br/>(Lifecycle & Transactional Emails)"]
+        STRIPE["Stripe Payment Gateway<br/>(Manual Capture and Webhooks)"]
+        PAYPAL["PayPal REST API<br/>(Authorize and Capture Orders)"]
+        CLOUDINARY["Cloudinary Media CDN<br/>(Public Tour and CMS Images)"]
+        VIATOR["Viator Partner API<br/>(External Day Trips and Experiences)"]
+        SMTP["SMTP Mail Server<br/>(Lifecycle and Transactional Emails)"]
         WEBPUSH["WebPush Push Services<br/>(FCM / Mozilla VAPID)"]
-        GEOIP["GeoIP Provider (ip-api / ipapi)<br/>(Currency & Locale Auto-Detection)"]
+        GEOIP["GeoIP Provider<br/>(Currency and Locale Auto-Detection)"]
     end
 
     %% Client flows
     BROWSER -->|HTTPS Requests| PROXY
-    BROWSER -->|Direct WebSocket Upgrade (wss://)| UVICORN
+    BROWSER -->|"Direct WebSocket Upgrade (wss://)"| UVICORN
 
     %% Edge flows
     PROXY --> SSR
@@ -251,7 +280,7 @@ flowchart TB
 
     %% Persistence flows
     SERVICES -->|SQLAlchemy 2.0 Pool| MYSQL
-    SERVICES -->|Distributed Locks & Keys| REDIS
+    SERVICES -->|Distributed Locks and Keys| REDIS
     SERVICES -->|Direct FS Read/Write| LOCAL_DISK
     WS_HANDLER -->|Pub/Sub Channel ws:messages| REDIS
 
@@ -260,8 +289,8 @@ flowchart TB
     BACKGROUND -->|Scheduled Task Execution| SERVICES
 
     %% External integration flows
-    SERVICES -->|REST API & Webhooks| STRIPE
-    SERVICES -->|REST API & Webhooks| PAYPAL
+    SERVICES -->|REST API and Webhooks| STRIPE
+    SERVICES -->|REST API and Webhooks| PAYPAL
     SERVICES -->|Asset Uploads| CLOUDINARY
     SERVICES -->|Partner API Requests| VIATOR
     SERVICES -->|SMTP TLS Connection| SMTP
@@ -277,39 +306,50 @@ flowchart TB
 Users connect via standard modern web browsers on desktop, tablet, and mobile devices. All public web traffic terminates at the Next.js edge router over HTTPS. WebSocket connections upgrade directly to the backend origin (`NEXT_PUBLIC_WS_URL`) over secure WebSockets (`wss://`).
 
 ### 2.2 Edge & Routing Tier (Next.js 16)
-- **`src/proxy.ts`**: Implements Next.js 16's server-side proxy convention (formerly middleware). Checks for the presence of the `tourvaa_access` session cookie on all protected portal routes (`/admin/*`, `/customer/*`, `/supplier/*`, `/agent/*`, `/affiliate/*`) before serving React Server Components, preventing HTML flashes of unauthorized UI.
-- **`next.config.ts`**: Provides path rewriting that transparently proxies client browser calls to `/api/:path*` and `/storage/:path*` directly to `API_PROXY_TARGET`. It also enforces HTTP Content Security Policy (CSP), frame guards, and client max body size limits (`60mb` for video uploads).
+- **`src/proxy.ts`**: Implements Next.js 16's server-side proxy convention (formerly middleware). Checks for the presence of the `tourvaa_access` session cookie on all protected portal routes (`/admin/*`, `/customer/*`, `/supplier/*`, `/agent/*`, `/affiliate/*`) before serving React Server Components. Redirects unauthenticated requests to their role-specific login routes (`/admin/login`, `/customer/login`, etc.).
+- **`next.config.ts` Rewrites**: Configures reverse proxy rewrites from the frontend domain to `BACKEND_INTERNAL_URL:8000` for `/api/:path*` and `/storage/:path*`, allowing the client browser to execute same-origin API calls without CORS overhead.
+- **Server Components (RSC)**: Renders initial page layouts server-side, pre-fetching static CMS, destination guides, and tour catalog data.
+- **Client Portals (SPA)**: Highly interactive administrative, supplier, B2B wholesale, and customer portals built with React 19 client components (`"use client"`), Axios interceptors, and Tailwind CSS 4 styling.
 
-### 2.3 FastAPI Application Tier
-- **Uvicorn Server**: Production ASGI server configured with single or multiple workers. Supports process-level concurrency and HTTP/1.1 and WebSocket protocols.
-- **Middleware Pipeline**:
-  - `setup_cors`: Strictly enforces permitted origins from `ALLOWED_ORIGINS` with credentials enabled.
-  - `ApiNoStoreMiddleware`: Appends `Cache-Control: no-store` headers to eliminate stale caching of dynamic user data.
-  - `CsrfMiddleware`: Defends state-modifying requests (`POST`, `PUT`, `DELETE`, `PATCH`).
-  - `register_error_handlers`: Normalizes uncaught exceptions and HTTP validation errors into unified JSON error structures.
-- **Dual-Domain Authentication**: Authenticates JWTs using segregated signing keys for administration staff (`admin` domain) vs external portal users (`normal` domain).
-- **Service Layer**: Houses 56 dedicated business domain services that decouple database queries and external APIs from the router handlers.
+### 2.3 FastAPI Application Tier (Port 8000)
+- **Uvicorn ASGI Server**: Runs the FastAPI application with high-concurrency async event loops.
+- **Middleware Stack**:
+  - `ApiNoStoreMiddleware`: Enforces `Cache-Control: no-store, no-cache, must-revalidate` across all sensitive API routes.
+  - `CORSMiddleware`: Enforces explicit origin validation for API and WebSocket clients.
+  - `CSRFMiddleware`: Requires valid CSRF tokens on state-mutating requests (`POST`, `PUT`, `PATCH`, `DELETE`) for cookie-authenticated browser sessions.
+  - `AppErrorHandlers`: Catches unhandled exceptions, logs forensic stack traces, and emits sanitized JSON error payloads (`{"success": false, "detail": "..."}`).
+- **51 Modular Routers**: Organizes 594 endpoints into discrete domain routers registered via `app.include_router()`.
+- **Authentication & RBAC**: Validates dual-domain JWT tokens (Admin domain vs Customer domain), enforces TOTP two-factor authentication, and evaluates fine-grained role-based permissions (`RequirePermission`).
+- **Domain Services (56 Services)**: Decouples business logic from HTTP transport, orchestrating database transactions, external API interactions, and background jobs.
+- **WebSocket Hub (`/api/ws/messages`)**: Manages real-time bidirectional messaging channels between travellers, suppliers, and customer support representatives.
 
-### 2.4 Background Scheduler
-FastAPI lifespan background task loops run concurrently without external worker dependencies (like Celery), leveraging `app/utils/distributed_lock.py` backed by Redis:
-- Stale unpaid booking seat release (15-minute sweep)
-- Payment hold release after 4-day decision window (60-minute sweep)
-- Payment capture retry following supplier acceptance (15-minute sweep)
-- Durable email delivery retry with exponential backoff (15-minute sweep)
-- Customer balance-due reminders and travel date notifications (60-minute sweep)
-- Data retention pruning for sessions and chat messages (24-hour sweep)
+### 2.4 Background Workers & Scheduled Sweeps
+FastAPI lifespan background coroutines periodically execute maintenance sweeps using distributed Redis locks (`acquire_sweep_lock`) to prevent race conditions in horizontal multi-container deployments:
+- **Stale Booking Expiry (every 15 min)**: Cancels pending bookings that have exceeded their reservation timeout, restoring calendar seats.
+- **Payment Hold Release (every 60 min)**: Releases expired pre-authorization holds when suppliers decline or fail to confirm bookings within 4 days.
+- **Payment Capture Retry (every 15 min)**: Retries gateway payment captures for confirmed bookings that encountered transient gateway timeouts.
+- **Lifecycle Email Retry (every 15 min)**: Retries failed notification emails with exponential backoff intervals (1 min, 5 min, 25 min).
+- **Booking Reminders (every 60 min)**: Dispatches upcoming departure reminders and balance-due payment notifications.
+- **Data Retention Pruning (every 24 hours)**: Prunes expired session tokens, temporary verification codes, and stale audit records according to compliance policies.
 
-### 2.5 Data & Storage Tier
-- **MySQL 8.0+ Database**: Stores the relational schema across 138 tables with InnoDB ACID guarantees.
-- **Redis Cache**: Backs distributed locking (`acquire_sweep_lock`), rate-limiting buckets, WebSocket single-use ticket store, and cross-worker pub/sub messaging.
-- **Private Disk Storage**: Dedicated filesystem root (`private-docs/`) segregated from public static storage, holding confidential documents (supplier business licenses, agent agreements, generated invoices, and booking receipts).
+### 2.5 Persistence & Data Tier
+- **MySQL 8.0+ Database**: Primary relational data store utilizing the InnoDB storage engine, with 139 relational tables and 170 Alembic migration revisions.
+- **Redis Cache & Pub/Sub**: Manages distributed mutex locks (`acquire_sweep_lock`), cached exchange rates, rate-limiting tokens, and WebSocket message fan-out across multiple Uvicorn worker processes.
+- **Private Disk Storage**: Houses sensitive generated PDF invoices, itineraries, booking receipts, and partner KYC documentation in a protected filesystem directory (`private-docs/`) accessible only by authenticated backend services.
 
-### 2.6 External Integrations
-Provides modular connectivity to Stripe (holds & captures), PayPal (orders & authorizations), Cloudinary (CDN media), Viator (third-party day tours), SMTP (transactional mail), WebPush (browser push notifications), and GeoIP (browsing currency localization).
+### 2.6 External Third-Party Services
+- **Stripe**: Handles card pre-authorization, manual capture, refunds, and webhook events (`checkout.session.completed`, `payment_intent.succeeded`).
+- **PayPal**: Handles international wallet transactions using PayPal v2 Orders (Authorize and Capture APIs).
+- **Cloudinary**: Serves as the primary content delivery network (CDN) for tour gallery images, destination banners, and user avatar uploads.
+- **Viator**: Synchronizes external day tours, activities, and live pricing via the Viator Partner API.
+- **SMTP Server**: Dispatches transactional and lifecycle emails over TLS (Port 587 / 465).
+- **WebPush / VAPID**: Broadcasts browser push notifications for booking status updates and incoming messages.
+- **GeoIP Providers**: Automatically detects incoming user currency and locale from client IP addresses.
+
 
 ---
 
-# Frontend Component Architecture & Navigation Flow
+## 1.2 Next.js 16 Multi-Portal App Router Component Tree
 
 This document details the Next.js 16 App Router component architecture, portal layouts, route guards, state providers, and client-server boundaries of the Tourvaa frontend (`tourvaa-admin-frontend`).
 
@@ -319,11 +359,11 @@ This document details the Next.js 16 App Router component architecture, portal l
 
 ```mermaid
 graph TD
-    subgraph APP_ROOT["Next.js App Root (../../src/app/)"]
-        ROOT_LAYOUT["RootLayout (../../src/app/layout.tsx)<br/>Fonts: Onest, Inter | HTML Shell"]
-        PROXY["Server Proxy Guard (../../src/proxy.ts)<br/>Checks tourvaa_access Session Cookie"]
+    subgraph APP_ROOT["Next.js App Root (src/app/)"]
+        ROOT_LAYOUT["RootLayout (src/app/layout.tsx)<br/>Fonts: Onest, Inter | HTML Shell"]
+        PROXY["Server Proxy Guard (src/proxy.ts)<br/>Checks tourvaa_access Session Cookie"]
         
-        subgraph PROVIDERS["Global Context Providers (../../src/providers/)"]
+        subgraph PROVIDERS["Global Context Providers (src/providers/)"]
             AUTH_PROV["AuthProvider<br/>(User State, Login/Logout, Token Version)"]
             SETTINGS_PROV["PublicSettingsProvider<br/>(Currency Master, Branding, Site Settings)"]
             STORE_PROV["TravelStoreProvider<br/>(Cart, Wishlist, Compare, Draft Bookings)"]
@@ -339,7 +379,7 @@ graph TD
         AFFILIATE_SHELL["affiliate/ Layout & ProtectedRoute<br/>(Affiliate Nav, Wallet Balance Bar)"]
     end
 
-    subgraph PAGE_COMPONENTS["Feature Page Modules (../../src/components/)"]
+    subgraph PAGE_COMPONENTS["Feature Page Modules (src/components/)"]
         TOURS_UI["Tours & Catalog UI<br/>(TourGrid, TourDetails, TourWizard, TourCalendar)"]
         BOOKING_UI["Booking & Checkout UI<br/>(CheckoutForm, TravellerList, PaymentModal)"]
         CMS_UI["CMS & Content Management<br/>(BannerManager, BlogEditor, PolicyManager)"]
@@ -348,10 +388,10 @@ graph TD
         REPORTS_UI["Analytics & Reporting UI<br/>(Recharts Visualizations, DateFilters, ExcelExport)"]
     end
 
-    subgraph API_CLIENT["API Client Layer (../../src/lib/api/)"]
-        CLIENT_AXIOS["Axios Instance (../../src/lib/api/client.ts)<br/>withCredentials: true, Automatic 401 Redirect"]
-        PUBLIC_AXIOS["Public Axios Instance (../../src/lib/api/publicClient.ts)<br/>Cached GET Requests for Public Catalog"]
-        WS_CLIENT["WebSocket Hook (../../src/hooks/useMessagingSocket.ts)<br/>Ticket Exchange & Auto-Reconnect"]
+    subgraph API_CLIENT["API Client Layer (src/lib/api/)"]
+        CLIENT_AXIOS["Axios Instance (src/lib/api/client.ts)<br/>withCredentials: true, Automatic 401 Redirect"]
+        PUBLIC_AXIOS["Public Axios Instance (src/lib/api/publicClient.ts)<br/>Cached GET Requests for Public Catalog"]
+        WS_CLIENT["WebSocket Hook (src/hooks/useMessagingSocket.ts)<br/>Ticket Exchange & Auto-Reconnect"]
     end
 
     %% Hierarchy flows
@@ -415,9 +455,10 @@ The application employs **two-tier defense-in-depth route guarding**:
 - Maintains heartbeat pings every 30 seconds.
 - Dispatches realtime UI updates for new booking messages, admin notices, and unread badge counters.
 
+
 ---
 
-# Backend Architecture & Request-Response Lifecycle
+## 1.3 FastAPI Service Layer & Request Lifecycle
 
 This document describes the internal architecture of the Tourvaa FastAPI backend (`tourvaa-admin-backend`), detailing application startup, middleware sequencing, route dispatching, dependency injection, and data persistence.
 
@@ -518,9 +559,10 @@ Every request passes through three custom middlewares:
 - Emails, push notifications, and WebSocket broadcasts are never performed synchronously inside request threads.
 - Instead, services enqueue records into `notification_deliveries` and trigger non-blocking `BackgroundTasks` to ensure that external network delays never slow down user requests.
 
+
 ---
 
-# Database Entity-Relationship Diagram (ERD) & Schema Overview
+## 1.4 139-Table Relational Database Domain ERD
 
 This document presents the Entity-Relationship Diagram (ERD) of the core database entities in the Tourvaa platform, modeling the relationships across users, tours, bookings, payments, invoices, suppliers, agents, and affiliates.
 
@@ -613,9 +655,215 @@ erDiagram
 | `affiliate_links` | `id` (int) | Custom referral links (`/r/{code}`) configured with attribution window days and destination redirects. |
 | `affiliate_conversions` | `id` (int) | Commission records generated upon successful checkout attribution, linked to booking financial records. |
 
+
 ---
 
-# Authentication & Authorization Decision Flow
+## 1.5 Containerized Docker Ingress & Production Topology
+
+This document outlines the containerized deployment architecture for the Tourvaa platform, illustrating the runtime topologies for frontend, backend, background workers, reverse proxy ingress, database clustering, and state persistence.
+
+---
+
+## 1. Production Deployment Topology Diagram
+
+```mermaid
+flowchart TB
+    subgraph USERS_TIER["External Traffic Sources"]
+        USERS["Public Travellers (Storefront)"]
+        ADMINS["Tourvaa Staff and Administrators"]
+        WEBHOOKS["Stripe and PayPal Webhook Events"]
+    end
+
+    subgraph CLOUD_EDGE["Edge and Ingress (Cloudflare / Reverse Proxy)"]
+        EDGE_ROUTER["Reverse Proxy / SSL Ingress (Nginx / Traefik / Cloudflare)<br/>TLS 1.3 Termination - Strict HTTP Security Headers"]
+    end
+
+    subgraph DOCKER_HOST["Production Container Host (Docker / Container Cluster)"]
+        subgraph FRONTEND_CONTAINER["Frontend Service (tourvaa-admin-frontend)"]
+            NODE_SERVER["Node.js 22 Standalone Server (server.js)<br/>Port 3000 - Non-Root user: nextjs<br/>Healthcheck: fetch 127.0.0.1:3000"]
+        end
+
+        subgraph BACKEND_CONTAINER["Backend Service (tourvaa-admin-backend)"]
+            ENTRYPOINT["docker-entrypoint.sh<br/>Alembic upgrade head (retries 30x)"]
+            UVICORN_PROC["Uvicorn ASGI Server (app.main:app)<br/>Port 8000 - Non-Root user: tourvaa<br/>Healthcheck: GET /api/health"]
+            ENTRYPOINT --> UVICORN_PROC
+        end
+
+        subgraph PERSISTENCE_CONTAINERS["Persistence Services"]
+            MYSQL_SRV[("MySQL 8.0+ Database Server<br/>Port 3306 - InnoDB Engine<br/>Volume: mysql_data")]
+            REDIS_SRV[("Redis Server (redis:8.0)<br/>Port 6379 - Appendonly: yes<br/>Volume: redis_data")]
+        end
+
+        subgraph VOLUMES["Host Mounted Volumes"]
+            STOR_VOL[("Host Volume: /data/storage<br/>Public asset uploads")]
+            PRIV_VOL[("Host Volume: /data/private-docs<br/>Invoices, Receipts, Partner KYC")]
+        end
+    end
+
+    subgraph EXTERNAL_SERVICES["External Cloud Infrastructure"]
+        CLOUDINARY_CDN["Cloudinary Media CDN<br/>(Image optimization & public storage)"]
+        SMTP_RELAY["SMTP Mail Relay<br/>(SendGrid / Google Workspace / Postmark)"]
+        STRIPE_API["Stripe API & Webhook Services"]
+        PAYPAL_API["PayPal Sandbox & Live REST API"]
+    end
+
+    USERS -->|"HTTPS Port 443"| EDGE_ROUTER
+    ADMINS -->|"HTTPS Port 443"| EDGE_ROUTER
+    WEBHOOKS -->|"HTTPS Port 443"| EDGE_ROUTER
+
+    EDGE_ROUTER -->|"HTTP Port 3000"| NODE_SERVER
+    EDGE_ROUTER -->|"WSS Port 8000 (/api/ws/messages)"| UVICORN_PROC
+    EDGE_ROUTER -->|"HTTP Port 8000 (Webhook Endpoints)"| UVICORN_PROC
+
+    NODE_SERVER -->|"Internal HTTP Proxy (/api/*)"| UVICORN_PROC
+    UVICORN_PROC -->|"TCP Port 3306 (SQLAlchemy)"| MYSQL_SRV
+    UVICORN_PROC -->|"TCP Port 6379 (Locks & WS)"| REDIS_SRV
+    UVICORN_PROC -->|Filesystem Mount| STOR_VOL
+    UVICORN_PROC -->|Filesystem Mount| PRIV_VOL
+
+    UVICORN_PROC -->|REST API| CLOUDINARY_CDN
+    UVICORN_PROC -->|"SMTP TLS Port 465"| SMTP_RELAY
+    UVICORN_PROC -->|HTTPS API| STRIPE_API
+    UVICORN_PROC -->|HTTPS API| PAYPAL_API
+```
+
+---
+
+## 2. Infrastructure & Container Components
+
+### 2.1 Edge Ingress & Reverse Proxy
+- **TLS Termination**: All incoming traffic arrives on port 443 with modern TLS (TLS 1.2/1.3).
+- **Reverse Proxy Routing**:
+  - `/*` routes forward to the Next.js frontend container on `http://frontend:3000`.
+  - `/api/ws/messages` WebSocket upgrade requests are routed directly to the backend on `http://backend:8000`.
+  - Direct webhook paths (`/api/payments/stripe/webhook`, `/api/payments/paypal/webhook`) can be routed directly to the backend to minimize hop latency.
+
+### 2.2 Frontend Container (`tourvaa-admin-frontend`)
+- **Base Image**: `node:22-alpine`.
+- **Runtime User**: Runs as unprivileged user `nextjs:nodejs` (UID/GID 1001).
+- **Standalone Build**: Leverages Next.js `output: "standalone"`, packing only necessary dependencies into `server.js` and reducing container size from ~1.2GB to <180MB.
+- **Healthcheck**: Periodically polls `http://127.0.0.1:3000/` every 30 seconds.
+
+### 2.3 Backend Container (`tourvaa-admin-backend`)
+- **Base Image**: `python:3.12-slim`.
+- **System Dependencies**: Includes `libgomp1` (required by ONNX runtime for FastEmbed embeddings).
+- **Runtime User**: Runs as unprivileged user `tourvaa:tourvaa` (UID/GID 1001).
+- **Entrypoint Script (`docker-entrypoint.sh`)**:
+  - Checks `RUN_MIGRATIONS=true`.
+  - Executes `python -m alembic upgrade head` with up to 30 retries, guaranteeing the database schema is up-to-date before Uvicorn starts.
+- **Healthcheck**: Queries `http://127.0.0.1:8000/api/health` every 30 seconds.
+
+### 2.4 Data Persistence Volumes
+- **MySQL Volume (`/var/lib/mysql`)**: Ensures durable database records survive container updates.
+- **Redis Volume (`/data`)**: Configured with `appendonly yes` for persistent distributed lock keys and rate-limit tracking.
+- **Storage Volume (`/data/storage`)**: Houses static asset uploads served via `/storage`.
+- **Private Docs Volume (`/data/private-docs`)**: Stores generated PDF invoices, itineraries, booking receipts, and partner business documents outside the public web root.
+
+
+---
+
+## 1.6 System Module Dependency Graph
+
+This document details the inter-module dependency graph, showcasing the communication pathways and data flow among all 20 business modules in the Tourvaa platform.
+
+---
+
+## 1. Complete System Module Dependency Graph
+
+```mermaid
+graph LR
+    subgraph IDENTITY["Identity & Governance"]
+        AUTH[01. Auth & Users]
+        ROLES[Roles & Permissions]
+        AUDIT[19. Audit Logging]
+        SETTINGS[20. Settings & Currency]
+    end
+
+    subgraph CATALOG["Catalog & Inventory"]
+        GEO[13. Destination Guides & Geo]
+        TOURS[02. Tours & Catalog]
+        VERSIONS[03. Tour Versions & Approval]
+        VIATOR[17. External Day Tours]
+    end
+
+    subgraph COMMERCIALS["Commercial Hub & Partners"]
+        SUPPLIERS[08. Suppliers & Ledger]
+        AGENTS[09. Agents & Resellers]
+        AFFILIATES[10. Affiliate Program]
+        CUSTOMERS[11. Customer Management]
+    end
+
+    subgraph TRANSACTION["Transaction Engine"]
+        BOOKINGS[04. Booking Engine]
+        CHECKOUT[05. Checkout & Payments]
+        INVOICES[06. Invoices & Receipts]
+        REFUNDS[07. Cancellations & Refunds]
+    end
+
+    subgraph ENGAGEMENT["Engagement & Support"]
+        CMS[12. Website CMS & Blog]
+        MESSAGING[14. Realtime Messaging]
+        NOTIF[15. Notification Engine]
+        CHATBOT[16. AI Chatbot & RAG]
+        REPORTS[18. Reports & Analytics]
+    end
+
+    %% Dependencies
+    AUTH --> ROLES
+    AUTH --> AUDIT
+    
+    TOURS --> GEO
+    TOURS --> SUPPLIERS
+    VERSIONS --> TOURS
+    VERSIONS --> AUTH
+    VIATOR --> GEO
+    
+    BOOKINGS --> TOURS
+    BOOKINGS --> CUSTOMERS
+    BOOKINGS --> SUPPLIERS
+    BOOKINGS --> AGENTS
+    BOOKINGS --> AFFILIATES
+    
+    CHECKOUT --> BOOKINGS
+    CHECKOUT --> SETTINGS
+    INVOICES --> BOOKINGS
+    INVOICES --> CHECKOUT
+    REFUNDS --> BOOKINGS
+    REFUNDS --> CHECKOUT
+    
+    SUPPLIERS --> BOOKINGS
+    AGENTS --> BOOKINGS
+    AFFILIATES --> BOOKINGS
+    
+    BOOKINGS --> NOTIF
+    BOOKINGS --> MESSAGING
+    MESSAGING --> AUTH
+    
+    CHATBOT --> TOURS
+    CHATBOT --> CMS
+    CMS --> GEO
+    
+    REPORTS --> BOOKINGS
+    REPORTS --> CHECKOUT
+    REPORTS --> SUPPLIERS
+    REPORTS --> AGENTS
+```
+
+---
+
+## 2. Structural Layering & Separation of Concerns
+
+The architecture strictly adheres to a layered hierarchy:
+1. **Foundation Tier**: Database engines, Redis cache, filesystem roots, encryption utilities (`app/utils/money.py`, `app/utils/distributed_lock.py`).
+2. **Persistence Tier**: 138 SQLAlchemy declarative models in `app/models/` defining primary keys, indexes, foreign key constraints, and cascade policies.
+3. **Domain Service Tier**: 56 business domain services in `app/services/` encapsulating business logic, calculation formulas, and external API requests.
+4. **Interface / Transport Tier**: 51 FastAPI routers in `app/routers/` handling HTTP request deserialization, Pydantic validation, authorization dependencies, and JSON serialization.
+5. **Client Presentation Tier**: Next.js 16 frontend consuming the API via same-origin proxied HTTP requests and direct WebSocket streams.
+
+
+---
+
+## 1.7 Dual-Domain JWT Authentication & Cookie Security Flow
 
 This document details the authentication and authorization lifecycle in Tourvaa, encompassing credential login, dual-domain JWT validation, 2FA with TOTP, session tracking, password reset token rotation, and RBAC permission checks.
 
@@ -752,9 +1000,10 @@ flowchart TD
    - Upon the 5th failed attempt, `locked_until` is populated with `now() + 15 minutes`.
    - The API short-circuits attempts during lockout without verifying the password, mitigating timing attacks.
 
+
 ---
 
-# Booking Lifecycle & State Transition Workflow
+## 1.8 6-State Booking Lifecycle & Auto-Expiry State Machine
 
 This document models the complete booking lifecycle in Tourvaa, detailing the state machine, seat reservation mechanics, supplier acceptance requirements, payment hold-to-capture sequence, and customer receipt generation.
 
@@ -872,9 +1121,10 @@ sequenceDiagram
 4. **Immutable Confirmation Receipts**:
    - Final booking receipts (`booking-confirmation-{id}-v2.pdf`) are stored in `private-docs/booking-confirmations/` upon initial confirmation. They are immutable snapshots and are never dynamically recomputed from mutable database rows on later download.
 
+
 ---
 
-# Payment Pre-Authorization, Hold & Capture Flow
+## 1.9 Payment Pre-Authorization, Hold & Capture Decision Flow
 
 This document details the payment gateway interaction architecture for Stripe and PayPal, demonstrating how funds are pre-authorized upon checkout, held in escrow during supplier evaluation, captured upon final confirmation, or released/refunded upon rejection or cancellation.
 
@@ -886,47 +1136,47 @@ This document details the payment gateway interaction architecture for Stripe an
 flowchart TD
     CHECKOUT[Customer Initiates Checkout] --> SELECT_GATEWAY{Choose Payment Method}
     
-    SELECT_GATEWAY -- Stripe Credit/Debit Card --> STRIPE_SESSION[Stripe Checkout Session<br/>payment_intent_data: capture_method='manual']
-    SELECT_GATEWAY -- PayPal Account / Card --> PAYPAL_ORDER[PayPal v2 Order<br/>intent='AUTHORIZE']
+    SELECT_GATEWAY -->|Stripe Credit/Debit Card| STRIPE_SESSION["Stripe Checkout Session<br/>payment_intent_data: capture_method='manual'"]
+    SELECT_GATEWAY -->|PayPal Account / Card| PAYPAL_ORDER["PayPal v2 Order<br/>intent='AUTHORIZE'"]
 
     STRIPE_SESSION --> CUST_AUTH_STRIPE[Customer Approves Card in Stripe]
     PAYPAL_ORDER --> CUST_AUTH_PAYPAL[Customer Authorizes via PayPal]
 
-    CUST_AUTH_STRIPE --> STRIPE_WEBHOOK[Webhook: checkout.session.completed]
-    CUST_AUTH_PAYPAL --> PAYPAL_CAPTURE[GET /api/payments/paypal/capture]
+    CUST_AUTH_STRIPE --> STRIPE_WEBHOOK["Webhook: checkout.session.completed"]
+    CUST_AUTH_PAYPAL --> PAYPAL_CAPTURE["GET /api/payments/paypal/capture"]
 
-    STRIPE_WEBHOOK --> RECORD_HOLD[Insert PaymentHold & Payment status='authorized']
+    STRIPE_WEBHOOK --> RECORD_HOLD["Insert PaymentHold and Payment status='authorized'"]
     PAYPAL_CAPTURE --> RECORD_HOLD
 
     RECORD_HOLD --> DECISION_GATE{Supplier Decision within 4 Days?}
 
-    DECISION_GATE -- Accepted by Supplier & Confirmed by Admin --> CAPTURE_FUNDS[Capture Authorized Funds]
-    DECISION_GATE -- Declined or Decision Window Expired --> RELEASE_FUNDS[Release Authorized Hold]
+    DECISION_GATE -->|"Accepted by Supplier & Confirmed by Admin"| CAPTURE_FUNDS[Capture Authorized Funds]
+    DECISION_GATE -->|"Declined or Decision Window Expired"| RELEASE_FUNDS[Release Authorized Hold]
 
     subgraph CAPTURE_FLOW["Payment Capture Workflow"]
         CAPTURE_FUNDS --> DO_CAPTURE{Provider?}
-        DO_CAPTURE -- Stripe --> STRIPE_POST[POST /v1/payment_intents/{id}/capture]
-        DO_CAPTURE -- PayPal --> PAYPAL_POST[POST /v2/payments/authorizations/{id}/capture]
+        DO_CAPTURE -->|Stripe| STRIPE_POST["POST /v1/payment_intents/{id}/capture"]
+        DO_CAPTURE -->|PayPal| PAYPAL_POST["POST /v2/payments/authorizations/{id}/capture"]
         STRIPE_POST --> CAPTURE_SUCCESS{Success?}
         PAYPAL_POST --> CAPTURE_SUCCESS
-        CAPTURE_SUCCESS -- Yes --> MARK_PAID[Update Payment status='completed'<br/>Generate Confirmation Receipt<br/>Generate Invoice]
-        CAPTURE_SUCCESS -- No --> CAPTURE_RETRY[Schedule in _payment_capture_retry_loop<br/>Retried every 15 minutes]
+        CAPTURE_SUCCESS -->|Yes| MARK_PAID["Update Payment status='completed'<br/>Generate Confirmation Receipt<br/>Generate Invoice"]
+        CAPTURE_SUCCESS -->|No| CAPTURE_RETRY["Schedule in _payment_capture_retry_loop<br/>Retried every 15 minutes"]
     end
 
     subgraph RELEASE_FLOW["Authorization Release / Void Workflow"]
         RELEASE_FUNDS --> DO_CANCEL{Provider?}
-        DO_CANCEL -- Stripe --> STRIPE_CANCEL[POST /v1/payment_intents/{id}/cancel]
-        DO_CANCEL -- PayPal --> PAYPAL_VOID[POST /v2/payments/authorizations/{id}/void]
-        STRIPE_CANCEL --> VOID_SUCCESS[PaymentHold status='released'<br/>Payment status='voided'<br/>Seats released back to TourCalendar]
+        DO_CANCEL -->|Stripe| STRIPE_CANCEL["POST /v1/payment_intents/{id}/cancel"]
+        DO_CANCEL -->|PayPal| PAYPAL_VOID["POST /v2/payments/authorizations/{id}/void"]
+        STRIPE_CANCEL --> VOID_SUCCESS["PaymentHold status='released'<br/>Payment status='voided'<br/>Seats released back to TourCalendar"]
         PAYPAL_VOID --> VOID_SUCCESS
     end
 
     subgraph REFUND_FLOW["Post-Capture Refund Workflow"]
-        MARK_PAID -. Customer Cancels Later .-> REFUND_CHECK{Refund Rule Evaluation}
+        MARK_PAID -.->|Customer Cancels Later| REFUND_CHECK{Refund Rule Evaluation}
         REFUND_CHECK --> EXEC_REFUND{Provider?}
-        EXEC_REFUND -- Stripe --> STRIPE_REFUND[POST /v1/refunds with idempotency key]
-        EXEC_REFUND -- PayPal --> PAYPAL_REFUND[POST /v2/payments/captures/{id}/refund]
-        STRIPE_REFUND --> REFUND_COMPLETE[Payment status='refunded'<br/>Debit Supplier Ledger<br/>Issue Credit Note]
+        EXEC_REFUND -->|Stripe| STRIPE_REFUND["POST /v1/refunds with idempotency key"]
+        EXEC_REFUND -->|PayPal| PAYPAL_REFUND["POST /v2/payments/captures/{id}/refund"]
+        STRIPE_REFUND --> REFUND_COMPLETE["Payment status='refunded'<br/>Debit Supplier Ledger<br/>Issue Credit Note"]
         PAYPAL_REFUND --> REFUND_COMPLETE
     end
 ```
@@ -950,116 +1200,10 @@ flowchart TD
 - All Stripe captures, voids, and refunds supply a unique `Idempotency-Key` (e.g. `capture-{payment.id}-{attempt}`).
 - If gateway capture fails due to temporary network partitions after supplier acceptance, the record enters retry state and is automatically re-attempted by `_payment_capture_retry_loop()` every 15 minutes.
 
----
-
-# Production Deployment Architecture & Infrastructure Topology
-
-This document details the production container topology, networking, storage persistence, reverse proxy integration, and CI/CD automation of the Tourvaa platform.
 
 ---
 
-## 1. Production Deployment Topology Diagram
-
-```mermaid
-flowchart TD
-    subgraph INTERNET["Public Internet"]
-        USERS["Visitors, Customers & Partners"]
-        ADMINS["Tourvaa Staff & Administrators"]
-        WEBHOOKS["Stripe & PayPal Webhook Events"]
-    end
-
-    subgraph CLOUD_EDGE["Edge & Ingress (Cloudflare / Reverse Proxy)"]
-        EDGE_ROUTER["Reverse Proxy / SSL Ingress (Nginx / Traefik / Cloudflare)<br/>TLS 1.3 Termination | Strict HTTP Security Headers"]
-    end
-
-    subgraph DOCKER_HOST["Production Container Host (Docker / Container Cluster)"]
-        subgraph FRONTEND_CONTAINER["Frontend Service (tourvaa-admin-frontend)"]
-            NODE_SERVER["Node.js 22 Standalone Server (server.js)<br/>Port 3000 | Non-Root user: nextjs<br/>Healthcheck: fetch('http://127.0.0.1:3000/')"]
-        end
-
-        subgraph BACKEND_CONTAINER["Backend Service (tourvaa-admin-backend)"]
-            ENTRYPOINT["docker-entrypoint.sh<br/>Alembic upgrade head (retries 30x)"]
-            UVICORN_PROC["Uvicorn ASGI Server (app.main:app)<br/>Port 8000 | Non-Root user: tourvaa<br/>Healthcheck: GET /api/health"]
-            ENTRYPOINT --> UVICORN_PROC
-        end
-
-        subgraph PERSISTENCE_CONTAINERS["Persistence Services"]
-            MYSQL_SRV[("MySQL 8.0+ Database Server<br/>Port 3306 | InnoDB Engine<br/>Volume: mysql_data")]
-            REDIS_SRV[("Redis Server (redis:8.0)<br/>Port 6379 | Appendonly: yes<br/>Volume: redis_data")]
-        end
-
-        subgraph VOLUMES["Host Mounted Volumes"]
-            STOR_VOL[("Host Volume: /data/storage<br/>Public asset uploads")]
-            PRIV_VOL[("Host Volume: /data/private-docs<br/>Invoices, Receipts, Partner KYC")]
-        end
-    end
-
-    subgraph EXTERNAL_SERVICES["External Cloud Infrastructure"]
-        CLOUDINARY_CDN["Cloudinary Media CDN<br/>(Image optimization & public storage)"]
-        SMTP_RELAY["SMTP Mail Relay<br/>(SendGrid / Google Workspace / Postmark)"]
-        STRIPE_API["Stripe API & Webhook Services"]
-        PAYPAL_API["PayPal Sandbox & Live REST API"]
-    end
-
-    %% Inbound connections
-    USERS -->|HTTPS :443| EDGE_ROUTER
-    ADMINS -->|HTTPS :443| EDGE_ROUTER
-    WEBHOOKS -->|HTTPS :443| EDGE_ROUTER
-
-    %% Edge to containers
-    EDGE_ROUTER -->|HTTP :3000 (Storefront & Portals)| NODE_SERVER
-    EDGE_ROUTER -->|WSS :8000 (/api/ws/messages)| UVICORN_PROC
-    EDGE_ROUTER -->|HTTP :8000 (Webhook Endpoints)| UVICORN_PROC
-
-    %% Container to container
-    NODE_SERVER -->|Internal HTTP Proxy (/api/*)| UVICORN_PROC
-    UVICORN_PROC -->|TCP :3306 (SQLAlchemy)| MYSQL_SRV
-    UVICORN_PROC -->|TCP :6379 (Locks & WS)| REDIS_SRV
-    UVICORN_PROC -->|Filesystem Mount| STOR_VOL
-    UVICORN_PROC -->|Filesystem Mount| PRIV_VOL
-
-    %% Backend to external
-    UVICORN_PROC -->|REST API| CLOUDINARY_CDN
-    UVICORN_PROC -->|SMTP TLS :465| SMTP_RELAY
-    UVICORN_PROC -->|HTTPS API| STRIPE_API
-    UVICORN_PROC -->|HTTPS API| PAYPAL_API
-```
-
----
-
-## 2. Infrastructure & Container Components
-
-### 2.1 Edge Ingress & Reverse Proxy
-- **TLS Termination**: All incoming traffic arrives on port 443 with modern TLS (TLS 1.2/1.3).
-- **Reverse Proxy Routing**:
-  - `/*` routes forward to the Next.js frontend container on `http://frontend:3000`.
-  - `/api/ws/messages` WebSocket upgrade requests are routed directly to the backend on `http://backend:8000`.
-  - Direct webhook paths (`/api/payments/stripe/webhook`, `/api/payments/paypal/webhook`) can be routed directly to the backend to minimize hop latency.
-
-### 2.2 Frontend Container (`tourvaa-admin-frontend`)
-- **Base Image**: `node:22-alpine`.
-- **Runtime User**: Runs as unprivileged user `nextjs:nodejs` (../../UID/GID 1001).
-- **Standalone Build**: Leverages Next.js `output: "standalone"`, packing only necessary dependencies into `server.js` and reducing container size from ~1.2GB to <180MB.
-- **Healthcheck**: Periodically polls `http://127.0.0.1:3000/` every 30 seconds.
-
-### 2.3 Backend Container (`tourvaa-admin-backend`)
-- **Base Image**: `python:3.12-slim`.
-- **System Dependencies**: Includes `libgomp1` (required by ONNX runtime for FastEmbed embeddings).
-- **Runtime User**: Runs as unprivileged user `tourvaa:tourvaa` (../../UID/GID 1001).
-- **Entrypoint Script (`docker-entrypoint.sh`)**:
-  - Checks `RUN_MIGRATIONS=true`.
-  - Executes `python -m alembic upgrade head` with up to 30 retries, guaranteeing the database schema is up-to-date before Uvicorn starts.
-- **Healthcheck**: Queries `http://127.0.0.1:8000/api/health` every 30 seconds.
-
-### 2.4 Data Persistence Volumes
-- **MySQL Volume (`/var/lib/mysql`)**: Ensures durable database records survive container updates.
-- **Redis Volume (`/data`)**: Configured with `appendonly yes` for persistent distributed lock keys and rate-limit tracking.
-- **Storage Volume (`/data/storage`)**: Houses static asset uploads served via `/storage`.
-- **Private Docs Volume (`/data/private-docs`)**: Stores generated PDF invoices, itineraries, booking receipts, and partner business documents outside the public web root.
-
----
-
-# Affiliate Referral Tracking & Commission Workflow
+## 1.10 30-Day Cookie Affiliate Referral & Commission Engine
 
 This document details the tracking, attribution, commission calculation, and wallet payout mechanics of the Tourvaa Affiliate Marketing system.
 
@@ -1125,9 +1269,10 @@ sequenceDiagram
 - **Attribution Logic**: First-touch or last-touch attribution within configurable attribution windows (default: 30 days).
 - **Fraud Prevention**: Commissions remain in `pending_hold` status until the tour travel date has completed and cancellation dispute periods have expired. Cancelled or refunded bookings automatically invalidate associated pending conversions.
 
+
 ---
 
-# Realtime WebSocket Messaging & Notification Flow
+## 1.11 WebSocket Realtime Messaging & Persistence Hub
 
 This document details the WebSocket architecture in Tourvaa, explaining the ticket minting protocol, cross-worker Redis pub/sub messaging, presence tracking, and conversation thread synchronization.
 
@@ -1193,102 +1338,523 @@ sequenceDiagram
    - Sockets emit periodic ping/pong frames (`PRESENCE_TTL_SECONDS = 75`).
    - Connections are capped at `MAX_SOCKETS_PER_USER = 5` to prevent resource starvation.
 
----
-
-# Architectural Module Dependencies & Communication Graph
-
-This document details the inter-module dependency graph, showcasing the communication pathways and data flow among all 20 business modules in the Tourvaa platform.
 
 ---
 
-## 1. Complete System Module Dependency Graph
+# SECTION 3: End-to-End Business Module Workflows (20 Modules)
+
+Every business module within Tourvaa is governed by a dedicated workflow state machine and decision tree. The following 20 flowcharts document the exact runtime logic and data state transitions:
+
+## Module 01: Module 01: Authentication & User Management
+
+### Workflow Architecture Flowchart
 
 ```mermaid
-graph LR
-    subgraph IDENTITY["Identity & Governance"]
-        AUTH[01. Auth & Users]
-        ROLES[Roles & Permissions]
-        AUDIT[19. Audit Logging]
-        SETTINGS[20. Settings & Currency]
-    end
-
-    subgraph CATALOG["Catalog & Inventory"]
-        GEO[13. Destination Guides & Geo]
-        TOURS[02. Tours & Catalog]
-        VERSIONS[03. Tour Versions & Approval]
-        VIATOR[17. External Day Tours]
-    end
-
-    subgraph COMMERCIALS["Commercial Hub & Partners"]
-        SUPPLIERS[08. Suppliers & Ledger]
-        AGENTS[09. Agents & Resellers]
-        AFFILIATES[10. Affiliate Program]
-        CUSTOMERS[11. Customer Management]
-    end
-
-    subgraph TRANSACTION["Transaction Engine"]
-        BOOKINGS[04. Booking Engine]
-        CHECKOUT[05. Checkout & Payments]
-        INVOICES[06. Invoices & Receipts]
-        REFUNDS[07. Cancellations & Refunds]
-    end
-
-    subgraph ENGAGEMENT["Engagement & Support"]
-        CMS[12. Website CMS & Blog]
-        MESSAGING[14. Realtime Messaging]
-        NOTIF[15. Notification Engine]
-        CHATBOT[16. AI Chatbot & RAG]
-        REPORTS[18. Reports & Analytics]
-    end
-
-    %% Dependencies
-    AUTH --> ROLES
-    AUTH --> AUDIT
-    
-    TOURS --> GEO
-    TOURS --> SUPPLIERS
-    VERSIONS --> TOURS
-    VERSIONS --> AUTH
-    VIATOR --> GEO
-    
-    BOOKINGS --> TOURS
-    BOOKINGS --> CUSTOMERS
-    BOOKINGS --> SUPPLIERS
-    BOOKINGS --> AGENTS
-    BOOKINGS --> AFFILIATES
-    
-    CHECKOUT --> BOOKINGS
-    CHECKOUT --> SETTINGS
-    INVOICES --> BOOKINGS
-    INVOICES --> CHECKOUT
-    REFUNDS --> BOOKINGS
-    REFUNDS --> CHECKOUT
-    
-    SUPPLIERS --> BOOKINGS
-    AGENTS --> BOOKINGS
-    AFFILIATES --> BOOKINGS
-    
-    BOOKINGS --> NOTIF
-    BOOKINGS --> MESSAGING
-    MESSAGING --> AUTH
-    
-    CHATBOT --> TOURS
-    CHATBOT --> CMS
-    CMS --> GEO
-    
-    REPORTS --> BOOKINGS
-    REPORTS --> CHECKOUT
-    REPORTS --> SUPPLIERS
-    REPORTS --> AGENTS
+sequenceDiagram
+    actor U as User
+    participant FE as Frontend (/login)
+    participant API as Backend (/api/auth/login)
+    participant DB as MySQL Database
+    U->>FE: Enters credentials
+    FE->>API: POST /api/auth/login
+    API->>DB: Verify bcrypt hash & status
+    API->>DB: Check lockout attempts & 2FA
+    API->>API: Sign Access (24h) & Refresh (30d) JWTs
+    API->>DB: Record user_sessions & login_history
+    API-->>FE: Set httpOnly cookies ('tourvaa_access', 'tourvaa_refresh')
+    FE-->>U: Redirect to role-assigned portal dashboard
 ```
 
 ---
 
-## 2. Structural Layering & Separation of Concerns
+## Module 02: Module 02: Tours & Catalog Engine
 
-The architecture strictly adheres to a layered hierarchy:
-1. **Foundation Tier**: Database engines, Redis cache, filesystem roots, encryption utilities (`app/utils/money.py`, `app/utils/distributed_lock.py`).
-2. **Persistence Tier**: 138 SQLAlchemy declarative models in `app/models/` defining primary keys, indexes, foreign key constraints, and cascade policies.
-3. **Domain Service Tier**: 56 business domain services in `app/services/` encapsulating business logic, calculation formulas, and external API requests.
-4. **Interface / Transport Tier**: 51 FastAPI routers in `app/routers/` handling HTTP request deserialization, Pydantic validation, authorization dependencies, and JSON serialization.
-5. **Client Presentation Tier**: Next.js 16 frontend consuming the API via same-origin proxied HTTP requests and direct WebSocket streams.
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart TD
+    CREATE[Supplier / Admin Creates Tour] --> META[Tour Meta: Title, Destination, Category, Duration]
+    META --> ITIN[Daily Itinerary & Accommodation Days]
+    ITIN --> PRICING[Pricing Slabs: Adult/Child/Single Supplement]
+    PRICING --> CALENDAR[Departure Calendar & Seat Capacity]
+    CALENDAR --> MEDIA[Gallery Images & Highlights]
+    MEDIA --> PUBLISH{Publish Status}
+    PUBLISH -- Admin Direct --> LIVE[Live on Storefront]
+    PUBLISH -- Supplier Submission --> REVIEW[Submitted for Version Review]
+```
+
+---
+
+## Module 03: Module 03: Tour Versioning & Approval System
+
+### Workflow Architecture Flowchart
+
+```mermaid
+sequenceDiagram
+    actor Sup as Supplier
+    participant API as Backend (/api/tour-versions)
+    participant DB as MySQL Database
+    actor Admin as Tourvaa Admin
+    Sup->>API: Edits Tour & Clicks "Submit for Approval"
+    API->>DB: Create TourVersion (status: 'pending_approval', snapshot: JSON)
+    Admin->>API: GET /api/tours/pending-approval
+    API-->>Admin: Returns TourVersion diff against live tour
+    Admin->>API: POST /api/tours/versions/{id}/approve
+    API->>DB: Apply Snapshot to Live Tour & Mark Version 'approved'
+    API->>Sup: Email Notification: "Tour Update Approved" 
+```
+
+---
+
+## Module 04: Module 04: Booking Engine & Lifecycle Management
+
+### Workflow Architecture Flowchart
+
+```mermaid
+stateDiagram-v2
+    [*] --> draft
+    draft --> pending_payment
+    pending_payment --> payment_authorized
+    payment_authorized --> pending_supplier_acceptance
+    pending_supplier_acceptance --> supplier_accepted
+    supplier_accepted --> confirmed
+    confirmed --> ready_to_travel
+    ready_to_travel --> completed
+    confirmed --> cancelled
+    cancelled --> [*]
+    completed --> [*]
+```
+
+---
+
+## Module 05: Module 05: Checkout & Payment Gateway Processing
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart TD
+    CHECKOUT[Checkout Screen] --> AUTH[Authorize Payment via Stripe / PayPal]
+    AUTH --> HOLD[PaymentHold Created: Funds Held in Escrow]
+    HOLD --> WAIT[Wait for Supplier Acceptance]
+    WAIT -- Supplier Accepts & Admin Confirms --> CAPTURE[Capture Authorized Payment]
+    WAIT -- Declined or Timed Out --> RELEASE[Cancel / Void Authorization Hold]
+```
+
+---
+
+## Module 06: Module 06: Invoices & Financial Confirmation Receipts
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart LR
+    BOOKING[Confirmed Booking] --> INVOICE[Generate Invoice with Tax / GST]
+    BOOKING --> RECEIPT[Generate Confirmation Receipt PDF]
+    INVOICE --> REMIND[Balance Due Reminders (60m loop)]
+    RECEIPT --> DOWNLOAD[Customer / Agent Downloads from Portal]
+```
+
+---
+
+## Module 07: Module 07: Cancellations & Refund Management
+
+### Workflow Architecture Flowchart
+
+```mermaid
+sequenceDiagram
+    actor C as Customer
+    participant API as Backend (/api/cancellations)
+    participant DB as MySQL Database
+    participant GW as Stripe / PayPal
+    C->>API: POST /api/cancellations/request (booking_id, reason)
+    API->>DB: Evaluate RefundRule (days before departure cutoff)
+    API->>DB: Insert CancellationRequest (status: 'pending_review')
+    Admin->>API: POST /api/cancellations/{id}/approve
+    API->>GW: create_refund(payment_intent_id, refund_amount)
+    API->>DB: Update Payment status='refunded' & Booking status='cancelled'
+    API->>C: Email Notification with Refund Credit Note
+```
+
+---
+
+## Module 08: Module 08: Suppliers Management & Financial Ledger
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart TD
+    REG[Supplier Registers] --> KYC[Uploads Business Info, Vehicles, Docs]
+    KYC --> ADMIN_APP[Admin Approves Account]
+    ADMIN_APP --> OPERATE[Supplier Lists Tours & Accepts Bookings]
+    OPERATE --> EARN[Net Tour Cost Credited to SupplierLedger]
+    EARN --> PAYOUT[Supplier Requests Payout]
+    PAYOUT --> ADMIN_PAY[Admin Dispatches Wire Transfer / PayPal]
+```
+
+---
+
+## Module 09: Module 09: B2B Agents & Reseller Portal
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart LR
+    AGENT[B2B Agent] --> BOOK[Reserves Tour on Behalf of Client]
+    BOOK --> COMM[Agent Commission Credited to AgentLedger]
+    BOOK --> MARKUP[Optional Agent Client Markup Applied]
+    COMM --> STATEMENT[Monthly Commission Statement Generated]
+    STATEMENT --> SETTLE[Commission Payout / Direct Deduction]
+```
+
+---
+
+## Module 10: Module 10: Affiliate Marketing & Tracking Engine
+
+### Workflow Architecture Flowchart
+
+```mermaid
+sequenceDiagram
+    actor A as Affiliate
+    participant Link as Redirect (/r/{code})
+    actor V as Visitor
+    participant API as Backend
+    participant DB as MySQL Database
+    A->>API: Create Referral Link
+    V->>Link: Clicks Link
+    Link->>DB: Log AffiliateClick & Set Cookie
+    Link-->>V: Redirect to Destination Page
+    V->>API: Books Tour
+    API->>DB: Record Attribution & Pending Conversion
+    API->>DB: Credit Affiliate Wallet after Tour Completion
+```
+
+---
+
+## Module 11: Module 11: Customer Management & Traveller Portal
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart TD
+    CUST[Customer Account] --> TRAV[Saved Travellers Manifests]
+    CUST --> WISH[Tour Wishlist Items]
+    CUST --> HIST[Booking & Invoice History]
+    WISH --> SWEEP[_wishlist_reminder_loop (24h)]
+    SWEEP --> EMAIL[Automated Email: 'Tours in your wishlist are filling up!']
+```
+
+---
+
+## Module 12: Module 12: Website CMS & Travel Blog
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart LR
+    ADMIN[Admin CMS Panel] --> BANNERS[Homepage Banners & Video]
+    ADMIN --> BLOGS[Blog Articles & SEO Meta]
+    ADMIN --> DEALS[Deals & Promotional Popups]
+    BANNERS --> STOREFRONT[Next.js Public Storefront]
+    BLOGS --> STOREFRONT
+    DEALS --> STOREFRONT
+```
+
+---
+
+## Module 13: Module 13: Destination Guides & Geo Reference
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart TD
+    GEO_DB[Geo Database: Country/State/City] --> DEST_PAGE[Destination Guide: /destinations/{slug}]
+    DEST_PAGE --> HERO[Hero Section & Country Map]
+    DEST_PAGE --> WHY[Why Visit & Best Time to Go]
+    DEST_PAGE --> TOURS_LIST[Curated Multi-Day Tours in Country]
+    DEST_PAGE --> EXT_TOURS[Viator External Day Trips]
+```
+
+---
+
+## Module 14: Module 14: Realtime Messaging & Customer Support
+
+### Workflow Architecture Flowchart
+
+```mermaid
+sequenceDiagram
+    actor C as Customer
+    participant WS as WebSocket Hub (/ws/messages)
+    participant Redis as Redis Pub/Sub
+    actor S as Supplier
+    C->>WS: Sends Booking Message
+    WS->>Redis: Publish Event
+    Redis-->>WS: Broadcast to Sockets
+    WS-->>S: Realtime Push Notification & Chat Frame
+```
+
+---
+
+## Module 15: Module 15: Notification Engine: Email & WebPush
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart TD
+    EVENT[Lifecycle Event: Booking / Payment] --> DISPATCH[dispatch_lifecycle_email / push]
+    DISPATCH --> DB_DELIV[NotificationDelivery Created]
+    DB_DELIV --> SEND{SMTP / VAPID Success?}
+    SEND -- Yes --> SUCCESS[Status: Delivered]
+    SEND -- No --> RETRY[Retry Queue: Exponential Backoff (1m, 5m, 25m)]
+```
+
+---
+
+## Module 16: Module 16: AI Travel Assistant & RAG Engine
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart TD
+    USER[Visitor Asks Question] --> EMBED[FastEmbed: Generate Query Vector]
+    EMBED --> COSINE[Cosine Similarity against chat_embeddings]
+    COSINE --> CONTEXT[Retrieve Matching FAQs & Tour Highlights]
+    CONTEXT --> PROMPT[Assemble Grounded Assistant Response]
+    PROMPT --> REPLY[Deliver Instant Answer & Relevant Tour Cards]
+```
+
+---
+
+## Module 17: Module 17: External Day Tours (Viator Integration)
+
+### Workflow Architecture Flowchart
+
+```mermaid
+sequenceDiagram
+    actor V as Visitor
+    participant FE as Storefront (/external-day-trips)
+    participant API as Backend (/api/public/external-tours)
+    participant Viator as Viator Partner API
+    FE->>API: GET /api/public/external-tours?destination=407
+    API->>Viator: Request Destination Day Trips (API Key & PID)
+    Viator-->>API: Returns Tours Manifest
+    API-->>FE: Formatted Day Trips with Affiliate Tracking Link
+    V->>Viator: Completes Booking on Viator.com (Campaign tagged)
+```
+
+---
+
+## Module 18: Module 18: Reporting & Business Analytics
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart TD
+    SCHED[Report Schedule: Daily / Weekly / Monthly] --> SWEEP[_report_schedule_loop (60m)]
+    SWEEP --> QUERY[Query Aggregated Sales, Invoices & Commissions]
+    QUERY --> EXCEL[Generate OpenPyXL Spreadsheet]
+    EXCEL --> EMAIL[Dispatch to Admin / Financial Stakeholders]
+```
+
+---
+
+## Module 19: Module 19: Audit Logging & Platform Governance
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart LR
+    ACTION[Admin / Partner Mutation] --> LOG[log_audit(db, action, entity, before, after)]
+    LOG --> DB_AUDIT[(audit_logs Table - Immutable)]
+    LOGIN[Login Attempt] --> DB_LOGIN[(login_history Table)]
+    DB_AUDIT -. Deliberately Excluded from Retention Pruning .-> COMPLIANCE[Long-term Compliance Record]
+```
+
+---
+
+## Module 20: Module 20: Platform Settings & Multi-Currency Engine
+
+### Workflow Architecture Flowchart
+
+```mermaid
+flowchart TD
+    SETTINGS_DB[Encrypted DB Settings] --> AES[AES-256 Decrypt via SETTINGS_ENCRYPTION_KEY]
+    AES --> GATEWAY[Stripe / PayPal Runtime Credentials]
+    GEOIP[Visitor IP] --> CURRENCY[Currency Master: Auto-Detect Browsing Currency]
+    CURRENCY --> CONVERT[Display Converted Storefront Prices]
+```
+
+---
+
+# SECTION 4: Developer Handover Sequence Flowcharts
+
+The following sequence diagrams guide incoming engineers through runtime request traces, session management, and rolling deployments:
+
+### Authentication Sequence
+
+# Authentication & Authorization Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant Browser as Web Browser
+    participant API as FastAPI Backend
+    participant DB as MySQL Database
+
+    User->>Browser: Enters credentials on /login
+    Browser->>API: POST /api/auth/login
+    API->>DB: Fetch user by email
+    API->>API: Verify bcrypt password hash
+    API->>DB: Check 2FA & active account status
+    API->>API: Sign Access (24h) & Refresh (30d) JWTs
+    API->>DB: Record session in user_sessions table
+    API-->>Browser: Set-Cookie: tourvaa_access, tourvaa_refresh, tourvaa_csrf
+    Browser-->>User: Redirect to role-assigned dashboard
+```
+
+
+---
+
+### Database Erd
+
+# Core Database Entity-Relationship Diagram (ERD)
+
+```mermaid
+erDiagram
+    users ||--o| customers : extends
+    users ||--o| suppliers : extends
+    users ||--o| agents : extends
+    users ||--o| affiliates : extends
+
+    tours ||--|{ tour_departures : has
+    tours ||--|{ tour_itineraries : contains
+    tours ||--|{ tour_pricing_tiers : defines
+
+    bookings ||--|| tours : books
+    bookings ||--|| customers : places
+    bookings ||--o| agents : manages
+    bookings ||--o| suppliers : operates
+    bookings ||--|{ booking_items : includes
+    bookings ||--|{ booking_passengers : lists
+    bookings ||--o{ payments : generates
+```
+
+
+---
+
+### Deployment Flow
+
+# Production Deployment Flow Diagram
+
+```mermaid
+flowchart LR
+    DEV["Developer Push to Git"] --> CI["CI Pipeline: Tests & Linting"]
+    CI --> BUILD["Docker Build: Multi-Stage Images"]
+    BUILD --> MIGRATE["One-Off Migration Job (alembic upgrade head)"]
+    MIGRATE --> DEPLOY["Rolling Container Update (Port 3000 & 8000)"]
+    DEPLOY --> HEALTH["Health Check Probe (/api/health)"]
+    HEALTH --> LIVE["Traffic Switched to New Release"]
+```
+
+
+---
+
+### Frontend Backend Flow
+
+# Frontend-to-Backend Request Flow Diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant UI as Next.js React Component
+    participant Client as Axios API Client (client.ts)
+    participant Auth as AuthProvider Context
+    participant API as FastAPI Router
+    participant DB as MySQL Database
+
+    UI->>Client: api.get('/customer/bookings')
+    Client->>Client: Attach X-CSRF-Token header from cookie
+    Client->>API: HTTP GET /api/customer/bookings (with cookies)
+    alt Access Token Expired (401)
+        API-->>Client: 401 Unauthorized
+        Client->>API: POST /api/auth/refresh-token
+        API->>API: Verify refresh token & issue new access token
+        API-->>Client: 200 OK (New tourvaa_access cookie)
+        Client->>API: Retry original GET /api/customer/bookings
+    end
+    API->>DB: Query customer bookings
+    DB-->>API: Booking records
+    API-->>Client: 200 OK (JSON Data)
+    Client-->>UI: Update TanStack Query cache & render table
+```
+
+
+---
+
+### Module Workflows
+
+# End-to-End Booking & Supplier Workflow Diagram
+
+```mermaid
+stateDiagram-v2
+    [*] --> pending: Traveler selects tour departure
+    pending --> pending_payment: Checkout intent created
+    pending_payment --> confirmed: Payment succeeds (Stripe/PayPal)
+    pending_payment --> expired: 60-min hold timeout
+    confirmed --> supplier_assigned: Supplier notified of booking
+    supplier_assigned --> accepted: Supplier accepts booking
+    supplier_assigned --> declined: Supplier declines booking
+    declined --> supplier_assigned: Admin reassigns alternative supplier
+    accepted --> completed: Tour completed
+    confirmed --> cancellation_requested: Traveler requests refund
+    cancellation_requested --> cancelled: Admin approves refund
+    cancelled --> [*]
+    completed --> [*]
+    expired --> [*]
+```
+
+
+---
+
+### System Overview
+
+# System Overview Architecture Diagram
+
+```mermaid
+flowchart TD
+    subgraph Clients["Access Layer"]
+        TRAV["Travelers / Public Users"]
+        OPS["Operations & Admin Users"]
+        PARTNERS["Suppliers / B2B Agents / Affiliates"]
+    end
+
+    subgraph Edge["Edge & Load Balancing"]
+        NGINX["Nginx / Cloudflare (Port 443 / SSL)"]
+    end
+
+    subgraph AppTier["Application Compute Tier"]
+        FE["Next.js 14 Frontend (Port 3000)"]
+        BE["FastAPI Backend (Port 8000)"]
+        CELERY["Celery Distributed Task Worker"]
+    end
+
+    subgraph DataTier["Data Persistence Tier"]
+        MYSQL[("MySQL 8.0 (138 Tables)")]
+        REDIS[("Redis Cache & Broker")]
+        STORAGE[("Persistent Media Storage")]
+    end
+
+    Clients --> Edge
+    Edge --> FE
+    Edge --> BE
+    FE -->|HTTP / Cookies| BE
+    BE --> MYSQL
+    BE --> REDIS
+    CELERY --> REDIS
+    CELERY --> MYSQL
+    BE --> STORAGE
+```
+
+
+---
+

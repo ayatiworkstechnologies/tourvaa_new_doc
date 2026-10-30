@@ -10,47 +10,47 @@ This document details the payment gateway interaction architecture for Stripe an
 flowchart TD
     CHECKOUT[Customer Initiates Checkout] --> SELECT_GATEWAY{Choose Payment Method}
     
-    SELECT_GATEWAY -- Stripe Credit/Debit Card --> STRIPE_SESSION[Stripe Checkout Session<br/>payment_intent_data: capture_method='manual']
-    SELECT_GATEWAY -- PayPal Account / Card --> PAYPAL_ORDER[PayPal v2 Order<br/>intent='AUTHORIZE']
+    SELECT_GATEWAY -->|Stripe Credit/Debit Card| STRIPE_SESSION["Stripe Checkout Session<br/>payment_intent_data: capture_method='manual'"]
+    SELECT_GATEWAY -->|PayPal Account / Card| PAYPAL_ORDER["PayPal v2 Order<br/>intent='AUTHORIZE'"]
 
     STRIPE_SESSION --> CUST_AUTH_STRIPE[Customer Approves Card in Stripe]
     PAYPAL_ORDER --> CUST_AUTH_PAYPAL[Customer Authorizes via PayPal]
 
-    CUST_AUTH_STRIPE --> STRIPE_WEBHOOK[Webhook: checkout.session.completed]
-    CUST_AUTH_PAYPAL --> PAYPAL_CAPTURE[GET /api/payments/paypal/capture]
+    CUST_AUTH_STRIPE --> STRIPE_WEBHOOK["Webhook: checkout.session.completed"]
+    CUST_AUTH_PAYPAL --> PAYPAL_CAPTURE["GET /api/payments/paypal/capture"]
 
-    STRIPE_WEBHOOK --> RECORD_HOLD[Insert PaymentHold & Payment status='authorized']
+    STRIPE_WEBHOOK --> RECORD_HOLD["Insert PaymentHold and Payment status='authorized'"]
     PAYPAL_CAPTURE --> RECORD_HOLD
 
     RECORD_HOLD --> DECISION_GATE{Supplier Decision within 4 Days?}
 
-    DECISION_GATE -- Accepted by Supplier & Confirmed by Admin --> CAPTURE_FUNDS[Capture Authorized Funds]
-    DECISION_GATE -- Declined or Decision Window Expired --> RELEASE_FUNDS[Release Authorized Hold]
+    DECISION_GATE -->|"Accepted by Supplier & Confirmed by Admin"| CAPTURE_FUNDS[Capture Authorized Funds]
+    DECISION_GATE -->|"Declined or Decision Window Expired"| RELEASE_FUNDS[Release Authorized Hold]
 
     subgraph CAPTURE_FLOW["Payment Capture Workflow"]
         CAPTURE_FUNDS --> DO_CAPTURE{Provider?}
-        DO_CAPTURE -- Stripe --> STRIPE_POST[POST /v1/payment_intents/{id}/capture]
-        DO_CAPTURE -- PayPal --> PAYPAL_POST[POST /v2/payments/authorizations/{id}/capture]
+        DO_CAPTURE -->|Stripe| STRIPE_POST["POST /v1/payment_intents/{id}/capture"]
+        DO_CAPTURE -->|PayPal| PAYPAL_POST["POST /v2/payments/authorizations/{id}/capture"]
         STRIPE_POST --> CAPTURE_SUCCESS{Success?}
         PAYPAL_POST --> CAPTURE_SUCCESS
-        CAPTURE_SUCCESS -- Yes --> MARK_PAID[Update Payment status='completed'<br/>Generate Confirmation Receipt<br/>Generate Invoice]
-        CAPTURE_SUCCESS -- No --> CAPTURE_RETRY[Schedule in _payment_capture_retry_loop<br/>Retried every 15 minutes]
+        CAPTURE_SUCCESS -->|Yes| MARK_PAID["Update Payment status='completed'<br/>Generate Confirmation Receipt<br/>Generate Invoice"]
+        CAPTURE_SUCCESS -->|No| CAPTURE_RETRY["Schedule in _payment_capture_retry_loop<br/>Retried every 15 minutes"]
     end
 
     subgraph RELEASE_FLOW["Authorization Release / Void Workflow"]
         RELEASE_FUNDS --> DO_CANCEL{Provider?}
-        DO_CANCEL -- Stripe --> STRIPE_CANCEL[POST /v1/payment_intents/{id}/cancel]
-        DO_CANCEL -- PayPal --> PAYPAL_VOID[POST /v2/payments/authorizations/{id}/void]
-        STRIPE_CANCEL --> VOID_SUCCESS[PaymentHold status='released'<br/>Payment status='voided'<br/>Seats released back to TourCalendar]
+        DO_CANCEL -->|Stripe| STRIPE_CANCEL["POST /v1/payment_intents/{id}/cancel"]
+        DO_CANCEL -->|PayPal| PAYPAL_VOID["POST /v2/payments/authorizations/{id}/void"]
+        STRIPE_CANCEL --> VOID_SUCCESS["PaymentHold status='released'<br/>Payment status='voided'<br/>Seats released back to TourCalendar"]
         PAYPAL_VOID --> VOID_SUCCESS
     end
 
     subgraph REFUND_FLOW["Post-Capture Refund Workflow"]
-        MARK_PAID -. Customer Cancels Later .-> REFUND_CHECK{Refund Rule Evaluation}
+        MARK_PAID -.->|Customer Cancels Later| REFUND_CHECK{Refund Rule Evaluation}
         REFUND_CHECK --> EXEC_REFUND{Provider?}
-        EXEC_REFUND -- Stripe --> STRIPE_REFUND[POST /v1/refunds with idempotency key]
-        EXEC_REFUND -- PayPal --> PAYPAL_REFUND[POST /v2/payments/captures/{id}/refund]
-        STRIPE_REFUND --> REFUND_COMPLETE[Payment status='refunded'<br/>Debit Supplier Ledger<br/>Issue Credit Note]
+        EXEC_REFUND -->|Stripe| STRIPE_REFUND["POST /v1/refunds with idempotency key"]
+        EXEC_REFUND -->|PayPal| PAYPAL_REFUND["POST /v2/payments/captures/{id}/refund"]
+        STRIPE_REFUND --> REFUND_COMPLETE["Payment status='refunded'<br/>Debit Supplier Ledger<br/>Issue Credit Note"]
         PAYPAL_REFUND --> REFUND_COMPLETE
     end
 ```

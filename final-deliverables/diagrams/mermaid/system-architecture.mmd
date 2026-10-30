@@ -3,8 +3,8 @@ flowchart TB
         BROWSER["Web Browser / Mobile Client<br/>(Desktop, Tablet, Mobile)"]
     end
 
-    subgraph EDGE["Edge & Routing Tier (Next.js 16)"]
-        PROXY["Next.js Proxy (src/proxy.ts)<br/>Cookie Verification & Route Shield"]
+    subgraph EDGE["Edge and Routing Tier (Next.js 16)"]
+        PROXY["Next.js Proxy (src/proxy.ts)<br/>Cookie Verification and Route Shield"]
         REWRITE["Next.js Route Proxy (next.config.ts)<br/>Rewrites /api and /storage"]
         SSR["Server Component Rendering<br/>(React 19 / Next.js)"]
         SPA["Client-Side Portals (SPA)<br/>Admin / Supplier / Agent / Affiliate / Customer"]
@@ -13,40 +13,40 @@ flowchart TB
     subgraph API_TIER["FastAPI Application Tier (Port 8000)"]
         UVICORN["Uvicorn ASGI Server<br/>(Multi-Worker Concurrency)"]
         MIDDLEWARE["Middleware Stack<br/>(CORS, ApiNoStore, CSRF, ErrorHandlers)"]
-        ROUTERS["API Routers (51 Modular Routers)<br/>(/api/* and /r/*)"]
-        AUTH_GUARD["Authentication & RBAC<br/>(Dual JWT Domain & RolePermission Checker)"]
+        ROUTERS["API Routers (51 Modular Routers)<br/>(api and r routes)"]
+        AUTH_GUARD["Authentication and RBAC<br/>(Dual JWT Domain and Role Checker)"]
         SERVICES["Domain Services Layer (56 Services)<br/>(Bookings, Payments, Tours, Ledgers, etc.)"]
-        WS_HANDLER["WebSocket Hub (/api/ws/messages)<br/>(Realtime Messaging & Live Notifications)"]
+        WS_HANDLER["WebSocket Hub (/api/ws/messages)<br/>(Realtime Messaging and Live Notifications)"]
     end
 
-    subgraph BACKGROUND["Background Workers & Scheduled Sweeps"]
+    subgraph BACKGROUND["Background Workers and Scheduled Sweeps"]
         STALE_SWEEP["Stale Booking Expiry (15m)<br/>Releases Unpaid Calendar Seats"]
         HOLD_SWEEP["Payment Hold Release (60m)<br/>Releases Expired Gateway Authorizations"]
         CAPTURE_SWEEP["Payment Capture Retry (15m)<br/>Retries Accepted Booking Captures"]
         EMAIL_RETRY["Lifecycle Email Retry (15m)<br/>Exponential Backoff 1m/5m/25m"]
-        REMINDERS["Booking & Balance Reminders (60m)<br/>Automated Traveller & Agent Alerts"]
-        RETENTION["Data Retention Pruning (24h)<br/>Prunes Old Sessions & Chat Logs"]
+        REMINDERS["Booking and Balance Reminders (60m)<br/>Automated Alerts"]
+        RETENTION["Data Retention Pruning (24h)<br/>Prunes Old Sessions and Chat Logs"]
     end
 
-    subgraph STORAGE["Persistence & Data Tier"]
-        MYSQL[("MySQL 8.0+ Database<br/>(InnoDB Engine, 138 Tables)")]
-        REDIS[("Redis Cache & Pub/Sub<br/>(Distributed Lock & WS Relay)")]
-        LOCAL_DISK[("Private Disk Storage<br/>(private-docs: Invoices, Itineraries, Docs)")]
+    subgraph STORAGE["Persistence and Data Tier"]
+        MYSQL[("MySQL 8.0+ Database<br/>(InnoDB Engine, 139 Tables)")]
+        REDIS[("Redis Cache and Pub/Sub<br/>(Distributed Lock and WS Relay)")]
+        LOCAL_DISK[("Private Disk Storage<br/>(private-docs: Invoices, Receipts)")]
     end
 
     subgraph EXTERNAL["External Third-Party Services"]
-        STRIPE["Stripe Payment Gateway<br/>(Manual Capture & Webhooks)"]
-        PAYPAL["PayPal REST API<br/>(Authorize & Capture Orders)"]
-        CLOUDINARY["Cloudinary Media CDN<br/>(Public Tour & CMS Images)"]
-        VIATOR["Viator Partner API<br/>(External Day Trips & Experiences)"]
-        SMTP["SMTP Mail Server<br/>(Lifecycle & Transactional Emails)"]
+        STRIPE["Stripe Payment Gateway<br/>(Manual Capture and Webhooks)"]
+        PAYPAL["PayPal REST API<br/>(Authorize and Capture Orders)"]
+        CLOUDINARY["Cloudinary Media CDN<br/>(Public Tour and CMS Images)"]
+        VIATOR["Viator Partner API<br/>(External Day Trips and Experiences)"]
+        SMTP["SMTP Mail Server<br/>(Lifecycle and Transactional Emails)"]
         WEBPUSH["WebPush Push Services<br/>(FCM / Mozilla VAPID)"]
-        GEOIP["GeoIP Provider (ip-api / ipapi)<br/>(Currency & Locale Auto-Detection)"]
+        GEOIP["GeoIP Provider<br/>(Currency and Locale Auto-Detection)"]
     end
 
     %% Client flows
     BROWSER -->|HTTPS Requests| PROXY
-    BROWSER -->|Direct WebSocket Upgrade (wss://)| UVICORN
+    BROWSER -->|"Direct WebSocket Upgrade (wss://)"| UVICORN
 
     %% Edge flows
     PROXY --> SSR
@@ -64,7 +64,7 @@ flowchart TB
 
     %% Persistence flows
     SERVICES -->|SQLAlchemy 2.0 Pool| MYSQL
-    SERVICES -->|Distributed Locks & Keys| REDIS
+    SERVICES -->|Distributed Locks and Keys| REDIS
     SERVICES -->|Direct FS Read/Write| LOCAL_DISK
     WS_HANDLER -->|Pub/Sub Channel ws:messages| REDIS
 
@@ -73,8 +73,8 @@ flowchart TB
     BACKGROUND -->|Scheduled Task Execution| SERVICES
 
     %% External integration flows
-    SERVICES -->|REST API & Webhooks| STRIPE
-    SERVICES -->|REST API & Webhooks| PAYPAL
+    SERVICES -->|REST API and Webhooks| STRIPE
+    SERVICES -->|REST API and Webhooks| PAYPAL
     SERVICES -->|Asset Uploads| CLOUDINARY
     SERVICES -->|Partner API Requests| VIATOR
     SERVICES -->|SMTP TLS Connection| SMTP
