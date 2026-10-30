@@ -175,6 +175,3 @@ This knowledge base provides an evidence-based, end-to-end architectural analysi
 - [15 — Open Risks & Architectural Limitations](final-release-handover/15-open-risks-and-limitations.md)
 - [16 — Post-Release Monitoring & Telemetry Plan](final-release-handover/16-post-release-monitoring-plan.md)
 - [17 — Final Project Completion Report](final-release-handover/17-final-project-completion-report.md)
-#   t o u r v a a _ n e w _ d o c 
- 
- 
