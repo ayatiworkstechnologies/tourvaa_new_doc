@@ -17,14 +17,14 @@
 ```mermaid
 sequenceDiagram
     actor A as Affiliate
-    participant Link as Redirect (/r/{code})
+    participant RDIR as Redirect (/r/{code})
     actor V as Visitor
     participant API as Backend
     participant DB as MySQL Database
     A->>API: Create Referral Link
-    V->>Link: Clicks Link
-    Link->>DB: Log AffiliateClick & Set Cookie
-    Link-->>V: Redirect to Destination Page
+    V->>RDIR: Clicks Link
+    RDIR->>DB: Log AffiliateClick & Set Cookie
+    RDIR-->>V: Redirect to Destination Page
     V->>API: Books Tour
     API->>DB: Record Attribution & Pending Conversion
     API->>DB: Credit Affiliate Wallet after Tour Completion

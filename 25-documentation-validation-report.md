@@ -62,7 +62,7 @@ technical-documentation/
 | **Total Markdown Documents** | 62 Files | Recursive file tree scan across `technical-documentation/` |
 | **Total Word Count** | 74,053 Words | Whitespace tokenization across all `.md` files |
 | **Total File Size** | 536.19 KB | UTF-8 byte stream length inspection |
-| **Mermaid Diagram Blocks** | 35 Diagrams | Regex audit of all ```` ```mermaid ```` code blocks |
+| **Mermaid Diagram Blocks** | 35 Diagrams | Regex audit of all Mermaid diagram code blocks |
 | **Mermaid Syntax Accuracy** | 100% Pass (0 Errors) | Automated parser verification of sequence, class, state, and flowcharts |
 | **Internal & File Links Inspected** | 565 Links | Automated link resolver inspecting all markdown link references |
 | **Broken Links Remaining** | **0 Broken Links** | 100% resolved to valid physical source files or docs |

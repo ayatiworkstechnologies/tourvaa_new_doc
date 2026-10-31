@@ -16,10 +16,10 @@
 ### 2.1 Workflow Architecture
 ```mermaid
 flowchart LR
-    ACTION[Admin / Partner Mutation] --> LOG[log_audit(db, action, entity, before, after)]
-    LOG --> DB_AUDIT[(audit_logs Table - Immutable)]
-    LOGIN[Login Attempt] --> DB_LOGIN[(login_history Table)]
-    DB_AUDIT -. Deliberately Excluded from Retention Pruning .-> COMPLIANCE[Long-term Compliance Record]
+    ACTION["Admin / Partner Mutation"] --> LOG["log_audit(db, action, entity, before, after)"]
+    LOG --> DB_AUDIT[("audit_logs Table - Immutable")]
+    LOGIN["Login Attempt"] --> DB_LOGIN[("login_history Table")]
+    DB_AUDIT -.->|Deliberately Excluded from Retention Pruning| COMPLIANCE["Long-term Compliance Record"]
 ```
 
 ### 2.2 Functional Capabilities

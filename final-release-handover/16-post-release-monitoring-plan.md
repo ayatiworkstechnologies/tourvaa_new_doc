@@ -4,10 +4,10 @@
 
 ```mermaid
 graph LR
-    Probes[Automated Health Probes] -->|Every 30s| API[/api/health]
-    Probes -->|Every 30s| Web[/ (Frontend Root)]
-    Metrics[Telemetry & Logs] -->|Stream| APM[Prometheus / Grafana / Datadog]
-    APM -->|Threshold Exceeded| Alert[On-Call SRE Alert Pager]
+    Probes["Automated Health Probes"] -->|Every 30s| API["/api/health"]
+    Probes -->|Every 30s| Web["/ (Frontend Root)"]
+    Metrics["Telemetry & Logs"] -->|Stream| APM["Prometheus / Grafana / Datadog"]
+    APM -->|Threshold Exceeded| Alert["On-Call SRE Alert Pager"]
 ```
 
 ---

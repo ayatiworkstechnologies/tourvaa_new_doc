@@ -18,7 +18,7 @@
 flowchart LR
     BOOKING[Confirmed Booking] --> INVOICE[Generate Invoice with Tax / GST]
     BOOKING --> RECEIPT[Generate Confirmation Receipt PDF]
-    INVOICE --> REMIND[Balance Due Reminders (60m loop)]
+    INVOICE --> REMIND["Balance Due Reminders (60m loop)"]
     RECEIPT --> DOWNLOAD[Customer / Agent Downloads from Portal]
 ```
 

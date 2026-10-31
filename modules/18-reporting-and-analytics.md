@@ -16,7 +16,7 @@
 ### 2.1 Workflow Architecture
 ```mermaid
 flowchart TD
-    SCHED[Report Schedule: Daily / Weekly / Monthly] --> SWEEP[_report_schedule_loop (60m)]
+    SCHED["Report Schedule: Daily / Weekly / Monthly"] --> SWEEP["_report_schedule_loop (60m)"]
     SWEEP --> QUERY[Query Aggregated Sales, Invoices & Commissions]
     QUERY --> EXCEL[Generate OpenPyXL Spreadsheet]
     EXCEL --> EMAIL[Dispatch to Admin / Financial Stakeholders]

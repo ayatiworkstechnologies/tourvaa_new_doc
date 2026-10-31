@@ -19,8 +19,8 @@ flowchart TD
     CUST[Customer Account] --> TRAV[Saved Travellers Manifests]
     CUST --> WISH[Tour Wishlist Items]
     CUST --> HIST[Booking & Invoice History]
-    WISH --> SWEEP[_wishlist_reminder_loop (24h)]
-    SWEEP --> EMAIL[Automated Email: 'Tours in your wishlist are filling up!']
+    WISH --> SWEEP["_wishlist_reminder_loop (24h)"]
+    SWEEP --> EMAIL["Automated Email: Tours in your wishlist are filling up!"]
 ```
 
 ### 2.2 Functional Capabilities

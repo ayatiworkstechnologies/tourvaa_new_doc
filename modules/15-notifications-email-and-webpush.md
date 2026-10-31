@@ -20,7 +20,7 @@ flowchart TD
     DISPATCH --> DB_DELIV[NotificationDelivery Created]
     DB_DELIV --> SEND{SMTP / VAPID Success?}
     SEND -- Yes --> SUCCESS[Status: Delivered]
-    SEND -- No --> RETRY[Retry Queue: Exponential Backoff (1m, 5m, 25m)]
+    SEND -- No --> RETRY["Retry Queue: Exponential Backoff (1m, 5m, 25m)"]
 ```
 
 ### 2.2 Functional Capabilities

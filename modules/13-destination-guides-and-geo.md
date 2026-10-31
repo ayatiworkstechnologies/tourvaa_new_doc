@@ -16,7 +16,7 @@
 ### 2.1 Workflow Architecture
 ```mermaid
 flowchart TD
-    GEO_DB[Geo Database: Country/State/City] --> DEST_PAGE[Destination Guide: /destinations/{slug}]
+    GEO_DB["Geo Database: Country/State/City"] --> DEST_PAGE["Destination Guide: /destinations/{slug}"]
     DEST_PAGE --> HERO[Hero Section & Country Map]
     DEST_PAGE --> WHY[Why Visit & Best Time to Go]
     DEST_PAGE --> TOURS_LIST[Curated Multi-Day Tours in Country]

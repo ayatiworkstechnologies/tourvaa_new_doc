@@ -60,10 +60,10 @@ flowchart TB
 ```
 
 Detailed architectural diagrams and component walkthroughs are available in:
-- [System Architecture Diagram](diagrams/system-architecture.md)
-- [Frontend Component Architecture](diagrams/frontend-architecture.md)
-- [Backend Architecture & Request Lifecycle](diagrams/backend-architecture.md)
-- [Module Dependencies Diagram](diagrams/module-dependencies.md)
+- [System Architecture Diagram](../../diagrams/system-architecture.md)
+- [Frontend Component Architecture](../../diagrams/frontend-architecture.md)
+- [Backend Architecture & Request Lifecycle](../../diagrams/backend-architecture.md)
+- [Module Dependencies Diagram](../../diagrams/module-dependencies.md)
 
 
 ---
@@ -93,12 +93,12 @@ Next.js 16 replaced the traditional `middleware.ts` convention with `proxy.ts`. 
 
 ## 3. Global Context Providers
 
-1. **`AuthProvider` ([`src/providers/AuthProvider.tsx`](../../tourvaa-admin-frontend/src/providers/AuthProvider.tsx))**:
+1. **`AuthProvider` ([`src/providers/AuthProvider.tsx`](../../../tourvaa-admin-frontend/src/providers/AuthProvider.tsx))**:
    - Manages active user authentication state, current role claims, and user profile data.
    - Listens for token invalidation events (e.g. password resets or remote session termination).
-2. **`PublicSettingsProvider` ([`src/providers/PublicSettingsProvider.tsx`](../../tourvaa-admin-frontend/src/providers/PublicSettingsProvider.tsx))**:
+2. **`PublicSettingsProvider` ([`src/providers/PublicSettingsProvider.tsx`](../../../tourvaa-admin-frontend/src/providers/PublicSettingsProvider.tsx))**:
    - Fetches and caches global platform configuration, currency exchange rates, company branding, and active payment gateway toggles.
-3. **`TravelStoreProvider` ([`src/providers/TravelStoreProvider.tsx`](../../tourvaa-admin-frontend/src/providers/TravelStoreProvider.tsx))**:
+3. **`TravelStoreProvider` ([`src/providers/TravelStoreProvider.tsx`](../../../tourvaa-admin-frontend/src/providers/TravelStoreProvider.tsx))**:
    - Manages client-side shopping cart state, tour comparison lists, and customer wishlist items backed by `localStorage`.
 
 ---
@@ -114,7 +114,7 @@ All browser HTTP requests to `/api/*` and `/storage/*` are proxied to the backen
 ```
 This ensures that the frontend communicates with the backend as a **same-origin service**, allowing secure, `httpOnly`, `SameSite=Lax` cookies to be exchanged without exposing raw JWTs to client-side JavaScript.
 
-The complete frontend route inventory is cataloged in [`inventories/frontend-routes.md`](inventories/frontend-routes.md).
+The complete frontend route inventory is cataloged in [`inventories/frontend-routes.md`](../../inventories/frontend-routes.md).
 
 
 ---
@@ -129,7 +129,7 @@ The backend is built with **FastAPI 0.139.2** (locked in `requirements.txt`; upg
 
 ## 2. Startup Lifecycle & Production Verification (`_lifespan`)
 
-FastAPI's async lifespan context manager in [`app/main.py`](../../tourvaa-admin-backend/app/main.py) enforces strict startup safety gates:
+FastAPI's async lifespan context manager in [`app/main.py`](../../../tourvaa-admin-backend/app/main.py) enforces strict startup safety gates:
 1. **`validate_database_migration_head()`**: Compares running database heads against Alembic code heads. Aborts if migrations are pending.
 2. **`validate_production_config()`**: In production (`APP_ENV != "development"`), ensures debug is disabled, JWT secrets are >= 32 characters, and webhook secrets are present.
 3. **`validate_worker_concurrency()`**: Enforces that `REDIS_URL` is set whenever `WEB_CONCURRENCY > 1`.
@@ -198,7 +198,7 @@ Requests pass through four specialized middlewares:
 9. **CMS & Engagement**: `cms_homepage_banners`, `cms_popular_destinations`, `cms_popular_tours`, `cms_blogs`, `cms_customer_reviews`, `cms_policies`.
 10. **Communications & AI**: `conversations`, `messages`, `notifications`, `notification_deliveries`, `chat_faqs`, `chat_sessions`, `chat_messages`, `chat_embeddings`.
 
-The complete schema reference of all 138 tables and columns is cataloged in [`inventories/database-tables.md`](inventories/database-tables.md).
+The complete schema reference of all 138 tables and columns is cataloged in [`inventories/database-tables.md`](../../inventories/database-tables.md).
 
 
 ---
@@ -220,7 +220,7 @@ flowchart TB
     end
 
     subgraph EDGE["Edge and Routing Tier (Next.js 16)"]
-        PROXY["Next.js Proxy (src/proxy.ts)<br/>Cookie Verification and Route Shield"]
+        PROXY["Next.js Proxy (../../src/proxy.ts)<br/>Cookie Verification and Route Shield"]
         REWRITE["Next.js Route Proxy (next.config.ts)<br/>Rewrites /api and /storage"]
         SSR["Server Component Rendering<br/>(React 19 / Next.js)"]
         SPA["Client-Side Portals (SPA)<br/>Admin / Supplier / Agent / Affiliate / Customer"]
@@ -359,11 +359,11 @@ This document details the Next.js 16 App Router component architecture, portal l
 
 ```mermaid
 graph TD
-    subgraph APP_ROOT["Next.js App Root (src/app/)"]
-        ROOT_LAYOUT["RootLayout (src/app/layout.tsx)<br/>Fonts: Onest, Inter | HTML Shell"]
-        PROXY["Server Proxy Guard (src/proxy.ts)<br/>Checks tourvaa_access Session Cookie"]
+    subgraph APP_ROOT["Next.js App Root (../../src/app/)"]
+        ROOT_LAYOUT["RootLayout (../../src/app/layout.tsx)<br/>Fonts: Onest, Inter | HTML Shell"]
+        PROXY["Server Proxy Guard (../../src/proxy.ts)<br/>Checks tourvaa_access Session Cookie"]
         
-        subgraph PROVIDERS["Global Context Providers (src/providers/)"]
+        subgraph PROVIDERS["Global Context Providers (../../src/providers/)"]
             AUTH_PROV["AuthProvider<br/>(User State, Login/Logout, Token Version)"]
             SETTINGS_PROV["PublicSettingsProvider<br/>(Currency Master, Branding, Site Settings)"]
             STORE_PROV["TravelStoreProvider<br/>(Cart, Wishlist, Compare, Draft Bookings)"]
@@ -379,7 +379,7 @@ graph TD
         AFFILIATE_SHELL["affiliate/ Layout & ProtectedRoute<br/>(Affiliate Nav, Wallet Balance Bar)"]
     end
 
-    subgraph PAGE_COMPONENTS["Feature Page Modules (src/components/)"]
+    subgraph PAGE_COMPONENTS["Feature Page Modules (../../src/components/)"]
         TOURS_UI["Tours & Catalog UI<br/>(TourGrid, TourDetails, TourWizard, TourCalendar)"]
         BOOKING_UI["Booking & Checkout UI<br/>(CheckoutForm, TravellerList, PaymentModal)"]
         CMS_UI["CMS & Content Management<br/>(BannerManager, BlogEditor, PolicyManager)"]
@@ -388,10 +388,10 @@ graph TD
         REPORTS_UI["Analytics & Reporting UI<br/>(Recharts Visualizations, DateFilters, ExcelExport)"]
     end
 
-    subgraph API_CLIENT["API Client Layer (src/lib/api/)"]
-        CLIENT_AXIOS["Axios Instance (src/lib/api/client.ts)<br/>withCredentials: true, Automatic 401 Redirect"]
-        PUBLIC_AXIOS["Public Axios Instance (src/lib/api/publicClient.ts)<br/>Cached GET Requests for Public Catalog"]
-        WS_CLIENT["WebSocket Hook (src/hooks/useMessagingSocket.ts)<br/>Ticket Exchange & Auto-Reconnect"]
+    subgraph API_CLIENT["API Client Layer (../../src/lib/api/)"]
+        CLIENT_AXIOS["Axios Instance (../../src/lib/api/client.ts)<br/>withCredentials: true, Automatic 401 Redirect"]
+        PUBLIC_AXIOS["Public Axios Instance (../../src/lib/api/publicClient.ts)<br/>Cached GET Requests for Public Catalog"]
+        WS_CLIENT["WebSocket Hook (../../src/hooks/useMessagingSocket.ts)<br/>Ticket Exchange & Auto-Reconnect"]
     end
 
     %% Hierarchy flows
@@ -740,14 +740,14 @@ flowchart TB
 
 ### 2.2 Frontend Container (`tourvaa-admin-frontend`)
 - **Base Image**: `node:22-alpine`.
-- **Runtime User**: Runs as unprivileged user `nextjs:nodejs` (UID/GID 1001).
+- **Runtime User**: Runs as unprivileged user `nextjs:nodejs` (../../UID/GID 1001).
 - **Standalone Build**: Leverages Next.js `output: "standalone"`, packing only necessary dependencies into `server.js` and reducing container size from ~1.2GB to <180MB.
 - **Healthcheck**: Periodically polls `http://127.0.0.1:3000/` every 30 seconds.
 
 ### 2.3 Backend Container (`tourvaa-admin-backend`)
 - **Base Image**: `python:3.12-slim`.
 - **System Dependencies**: Includes `libgomp1` (required by ONNX runtime for FastEmbed embeddings).
-- **Runtime User**: Runs as unprivileged user `tourvaa:tourvaa` (UID/GID 1001).
+- **Runtime User**: Runs as unprivileged user `tourvaa:tourvaa` (../../UID/GID 1001).
 - **Entrypoint Script (`docker-entrypoint.sh`)**:
   - Checks `RUN_MIGRATIONS=true`.
   - Executes `python -m alembic upgrade head` with up to 30 retries, guaranteeing the database schema is up-to-date before Uvicorn starts.
@@ -1345,7 +1345,7 @@ sequenceDiagram
 
 Every business module within Tourvaa is governed by a dedicated workflow state machine and decision tree. The following 20 flowcharts document the exact runtime logic and data state transitions:
 
-## Module 01: Module 01: Authentication & User Management
+## Module 01: Authentication & User Management
 
 ### Workflow Architecture Flowchart
 
@@ -1367,7 +1367,7 @@ sequenceDiagram
 
 ---
 
-## Module 02: Module 02: Tours & Catalog Engine
+## Module 02: Tours & Catalog Engine
 
 ### Workflow Architecture Flowchart
 
@@ -1385,7 +1385,7 @@ flowchart TD
 
 ---
 
-## Module 03: Module 03: Tour Versioning & Approval System
+## Module 03: Tour Versioning & Approval System
 
 ### Workflow Architecture Flowchart
 
@@ -1406,7 +1406,7 @@ sequenceDiagram
 
 ---
 
-## Module 04: Module 04: Booking Engine & Lifecycle Management
+## Module 04: Booking Engine & Lifecycle Management
 
 ### Workflow Architecture Flowchart
 
@@ -1427,7 +1427,7 @@ stateDiagram-v2
 
 ---
 
-## Module 05: Module 05: Checkout & Payment Gateway Processing
+## Module 05: Checkout & Payment Gateway Processing
 
 ### Workflow Architecture Flowchart
 
@@ -1442,7 +1442,7 @@ flowchart TD
 
 ---
 
-## Module 06: Module 06: Invoices & Financial Confirmation Receipts
+## Module 06: Invoices & Financial Confirmation Receipts
 
 ### Workflow Architecture Flowchart
 
@@ -1450,13 +1450,13 @@ flowchart TD
 flowchart LR
     BOOKING[Confirmed Booking] --> INVOICE[Generate Invoice with Tax / GST]
     BOOKING --> RECEIPT[Generate Confirmation Receipt PDF]
-    INVOICE --> REMIND[Balance Due Reminders (60m loop)]
+    INVOICE --> REMIND["Balance Due Reminders (60m loop)"]
     RECEIPT --> DOWNLOAD[Customer / Agent Downloads from Portal]
 ```
 
 ---
 
-## Module 07: Module 07: Cancellations & Refund Management
+## Module 07: Cancellations & Refund Management
 
 ### Workflow Architecture Flowchart
 
@@ -1477,7 +1477,7 @@ sequenceDiagram
 
 ---
 
-## Module 08: Module 08: Suppliers Management & Financial Ledger
+## Module 08: Suppliers Management & Financial Ledger
 
 ### Workflow Architecture Flowchart
 
@@ -1493,7 +1493,7 @@ flowchart TD
 
 ---
 
-## Module 09: Module 09: B2B Agents & Reseller Portal
+## Module 09: B2B Agents & Reseller Portal
 
 ### Workflow Architecture Flowchart
 
@@ -1508,21 +1508,21 @@ flowchart LR
 
 ---
 
-## Module 10: Module 10: Affiliate Marketing & Tracking Engine
+## Module 10: Affiliate Marketing & Tracking Engine
 
 ### Workflow Architecture Flowchart
 
 ```mermaid
 sequenceDiagram
     actor A as Affiliate
-    participant Link as Redirect (/r/{code})
+    participant RDIR as Redirect (/r/{code})
     actor V as Visitor
     participant API as Backend
     participant DB as MySQL Database
     A->>API: Create Referral Link
-    V->>Link: Clicks Link
-    Link->>DB: Log AffiliateClick & Set Cookie
-    Link-->>V: Redirect to Destination Page
+    V->>RDIR: Clicks Link
+    RDIR->>DB: Log AffiliateClick & Set Cookie
+    RDIR-->>V: Redirect to Destination Page
     V->>API: Books Tour
     API->>DB: Record Attribution & Pending Conversion
     API->>DB: Credit Affiliate Wallet after Tour Completion
@@ -1530,7 +1530,7 @@ sequenceDiagram
 
 ---
 
-## Module 11: Module 11: Customer Management & Traveller Portal
+## Module 11: Customer Management & Traveller Portal
 
 ### Workflow Architecture Flowchart
 
@@ -1539,13 +1539,13 @@ flowchart TD
     CUST[Customer Account] --> TRAV[Saved Travellers Manifests]
     CUST --> WISH[Tour Wishlist Items]
     CUST --> HIST[Booking & Invoice History]
-    WISH --> SWEEP[_wishlist_reminder_loop (24h)]
-    SWEEP --> EMAIL[Automated Email: 'Tours in your wishlist are filling up!']
+    WISH --> SWEEP["_wishlist_reminder_loop (24h)"]
+    SWEEP --> EMAIL["Automated Email: Tours in your wishlist are filling up!"]
 ```
 
 ---
 
-## Module 12: Module 12: Website CMS & Travel Blog
+## Module 12: Website CMS & Travel Blog
 
 ### Workflow Architecture Flowchart
 
@@ -1561,13 +1561,13 @@ flowchart LR
 
 ---
 
-## Module 13: Module 13: Destination Guides & Geo Reference
+## Module 13: Destination Guides & Geo Reference
 
 ### Workflow Architecture Flowchart
 
 ```mermaid
 flowchart TD
-    GEO_DB[Geo Database: Country/State/City] --> DEST_PAGE[Destination Guide: /destinations/{slug}]
+    GEO_DB["Geo Database: Country/State/City"] --> DEST_PAGE["Destination Guide: /destinations/{slug}"]
     DEST_PAGE --> HERO[Hero Section & Country Map]
     DEST_PAGE --> WHY[Why Visit & Best Time to Go]
     DEST_PAGE --> TOURS_LIST[Curated Multi-Day Tours in Country]
@@ -1576,7 +1576,7 @@ flowchart TD
 
 ---
 
-## Module 14: Module 14: Realtime Messaging & Customer Support
+## Module 14: Realtime Messaging & Customer Support
 
 ### Workflow Architecture Flowchart
 
@@ -1594,7 +1594,7 @@ sequenceDiagram
 
 ---
 
-## Module 15: Module 15: Notification Engine: Email & WebPush
+## Module 15: Notification Engine: Email & WebPush
 
 ### Workflow Architecture Flowchart
 
@@ -1604,12 +1604,12 @@ flowchart TD
     DISPATCH --> DB_DELIV[NotificationDelivery Created]
     DB_DELIV --> SEND{SMTP / VAPID Success?}
     SEND -- Yes --> SUCCESS[Status: Delivered]
-    SEND -- No --> RETRY[Retry Queue: Exponential Backoff (1m, 5m, 25m)]
+    SEND -- No --> RETRY["Retry Queue: Exponential Backoff (1m, 5m, 25m)"]
 ```
 
 ---
 
-## Module 16: Module 16: AI Travel Assistant & RAG Engine
+## Module 16: AI Travel Assistant & RAG Engine
 
 ### Workflow Architecture Flowchart
 
@@ -1624,7 +1624,7 @@ flowchart TD
 
 ---
 
-## Module 17: Module 17: External Day Tours (Viator Integration)
+## Module 17: External Day Tours (Viator Integration)
 
 ### Workflow Architecture Flowchart
 
@@ -1643,13 +1643,13 @@ sequenceDiagram
 
 ---
 
-## Module 18: Module 18: Reporting & Business Analytics
+## Module 18: Reporting & Business Analytics
 
 ### Workflow Architecture Flowchart
 
 ```mermaid
 flowchart TD
-    SCHED[Report Schedule: Daily / Weekly / Monthly] --> SWEEP[_report_schedule_loop (60m)]
+    SCHED["Report Schedule: Daily / Weekly / Monthly"] --> SWEEP["_report_schedule_loop (60m)"]
     SWEEP --> QUERY[Query Aggregated Sales, Invoices & Commissions]
     QUERY --> EXCEL[Generate OpenPyXL Spreadsheet]
     EXCEL --> EMAIL[Dispatch to Admin / Financial Stakeholders]
@@ -1657,21 +1657,21 @@ flowchart TD
 
 ---
 
-## Module 19: Module 19: Audit Logging & Platform Governance
+## Module 19: Audit Logging & Platform Governance
 
 ### Workflow Architecture Flowchart
 
 ```mermaid
 flowchart LR
-    ACTION[Admin / Partner Mutation] --> LOG[log_audit(db, action, entity, before, after)]
-    LOG --> DB_AUDIT[(audit_logs Table - Immutable)]
-    LOGIN[Login Attempt] --> DB_LOGIN[(login_history Table)]
-    DB_AUDIT -. Deliberately Excluded from Retention Pruning .-> COMPLIANCE[Long-term Compliance Record]
+    ACTION["Admin / Partner Mutation"] --> LOG["log_audit(db, action, entity, before, after)"]
+    LOG --> DB_AUDIT[("audit_logs Table - Immutable")]
+    LOGIN["Login Attempt"] --> DB_LOGIN[("login_history Table")]
+    DB_AUDIT -.->|Deliberately Excluded from Retention Pruning| COMPLIANCE["Long-term Compliance Record"]
 ```
 
 ---
 
-## Module 20: Module 20: Platform Settings & Multi-Currency Engine
+## Module 20: Platform Settings & Multi-Currency Engine
 
 ### Workflow Architecture Flowchart
 
@@ -1799,7 +1799,7 @@ sequenceDiagram
 stateDiagram-v2
     [*] --> pending: Traveler selects tour departure
     pending --> pending_payment: Checkout intent created
-    pending_payment --> confirmed: Payment succeeds (Stripe/PayPal)
+    pending_payment --> confirmed: Payment succeeds (../../Stripe/PayPal)
     pending_payment --> expired: 60-min hold timeout
     confirmed --> supplier_assigned: Supplier notified of booking
     supplier_assigned --> accepted: Supplier accepts booking

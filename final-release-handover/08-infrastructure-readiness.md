@@ -4,13 +4,13 @@
 
 ```mermaid
 graph TD
-    User([End User / Browser]) -->|HTTPS:443| CDN[Cloudflare / Edge Reverse Proxy]
-    CDN -->|HTTP:3000| FE[Next.js 15 Frontend Standalone Pods]
-    FE -->|Internal HTTP:8000| BE[FastAPI Backend Pods]
+    User(["End User / Browser"]) -->|HTTPS:443| CDN["Cloudflare / Edge Reverse Proxy"]
+    CDN -->|HTTP:3000| FE["Next.js 15 Frontend Standalone Pods"]
+    FE -->|Internal HTTP:8000| BE["FastAPI Backend Pods"]
     CDN -->|WebSocket:8000| BE
-    BE -->|TCP:3306| DB[(MySQL 8.4 Database Cluster)]
-    BE -->|TCP:6379| Redis[(Redis Distributed Cache & Locks)]
-    BE -->|Local Mount| Storage[/data/storage & private-docs]
+    BE -->|TCP:3306| DB[("MySQL 8.4 Database Cluster")]
+    BE -->|TCP:6379| Redis[("Redis Distributed Cache & Locks")]
+    BE -->|Local Mount| Storage["/data/storage & private-docs"]
 ```
 
 ---
